@@ -1,16 +1,18 @@
 package salah.api.salaholm.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.redis.core.RedisHash;
-
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
-@RequiredArgsConstructor
 @Data //remove later
-@RedisHash("Prayer")
-public class Prayer implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table
+public class Prayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
