@@ -16,7 +16,6 @@ public class Prayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column
     private Long id;
 
     private String hijri;
