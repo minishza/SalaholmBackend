@@ -1,6 +1,7 @@
 package salah.api.salaholm.controller;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import salah.api.salaholm.model.Prayer;
@@ -16,7 +17,7 @@ public class PrayerController {
 
     @Cacheable("Test")
     @RequestMapping("/test")
-    public Prayer test() {
+    public ResponseEntity<Prayer> test() {
         Prayer prayer = Prayer.builder()
                 .hijri("Hijri")
                 .georgian("Georgian")
@@ -26,10 +27,9 @@ public class PrayerController {
                 .zuhr("Zuhr")
                 .maghrib("Maghrib")
                 .isha("Isha")
-                .scrapedSite("islamiska")
                 .build();
 
         prayerRepository.save(prayer);
-        return prayerRepository.findAll().get(0);
+        return ResponseEntity.ok(prayerRepository.findAll().get(0));
     }
 }
