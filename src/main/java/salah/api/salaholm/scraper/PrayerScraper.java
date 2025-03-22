@@ -2,9 +2,12 @@ package salah.api.salaholm.scraper;
 
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.config.Constants;
 
@@ -34,7 +37,16 @@ public class PrayerScraper {
         List<WebElement> monthDropdownSelector = chromeWebDriver.findElements(By.cssSelector(Constants.ISLAMISKA_MONTH_DROPDOWN));
 
         for (int month = 0; month <= 12; month++) {
+            int finalMonth = month;
+            new WebDriverWait(chromeWebDriver, Duration.ofSeconds(1))
+                    .ignoring(StaleElementReferenceException.class)
+                    .until((WebDriver driver) -> {
+                        monthDropdownSelector.get(finalMonth).click();
+                        webDriverTimeout(600);
 
+                        //scrape data
+                        return true;
+                    });
         }
     }
 
