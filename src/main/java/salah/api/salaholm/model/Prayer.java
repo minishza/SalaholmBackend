@@ -25,4 +25,6 @@ public class Prayer {
     private String asr;
     private String maghrib;
     private String isha;
+
+    private String city;
 }
