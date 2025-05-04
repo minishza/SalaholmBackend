@@ -1,7 +1,9 @@
 package salah.api.salaholm.config;
 
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +55,17 @@ public class SecurityConfig {
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("profile.managed_default_content_settings.images", 2);
         options.setExperimentalOption("prefs", prefs);
-
         return new ChromeDriver(options);
+    }
+
+    @Bean
+    public FluentWait<ChromeDriver> fluentWait(ChromeDriver driver) {
+        return new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(5))
+                .pollingEvery(Duration.ofMillis(250))
+                .ignoreAll(List.of(
+                        StaleElementReferenceException.class,
+                        NoSuchElementException.class)
+                );
     }
 }

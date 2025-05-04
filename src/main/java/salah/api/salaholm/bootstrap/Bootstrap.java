@@ -14,11 +14,6 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        try {
-            prayerScraper.scrapePrayerTimesFromIslamiskaSite();
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            System.out.println("END OF PRAYERS");
-        }
+        prayerScraper.getPrayerTimesFromIslamiska();
     }
 }
