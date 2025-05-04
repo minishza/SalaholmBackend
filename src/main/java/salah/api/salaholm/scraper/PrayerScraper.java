@@ -27,8 +27,8 @@ public class PrayerScraper {
     public void scrapePrayerTimesFromIslamiskaSite() {
         chromeWebDriver.get(Constants.ISLAMISKA_URL);
         FluentWait<ChromeDriver> fluentWait = new FluentWait<>(chromeWebDriver)
-                .withTimeout(Duration.ofSeconds(2))
-                .pollingEvery(Duration.ofMillis(400))
+                .withTimeout(Duration.ofSeconds(1))
+                .pollingEvery(Duration.ofMillis(250))
                 .ignoring(StaleElementReferenceException.class)
                 .ignoring(NoSuchElementException.class);
 

@@ -12,7 +12,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -45,7 +47,11 @@ public class SecurityConfig {
     @Bean
     public ChromeDriver chromeDriver() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "start-maximized", "--disable-extensions");
+        options.addArguments("--headless", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "start-maximized", "--disable-extensions", "--disable-css");
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.managed_default_content_settings.images", 2);
+        options.setExperimentalOption("prefs", prefs);
+
         return new ChromeDriver(options);
     }
 }
