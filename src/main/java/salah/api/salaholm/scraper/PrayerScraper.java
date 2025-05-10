@@ -73,7 +73,11 @@ public class PrayerScraper {
         LocalDate prayerDay = toDate(prayerData, monthlyPrayerElement);
 
         return Prayer.builder()
-
+                .fajr(prayerData[2])
+                .sunrise(prayerData[1])
+                .zuhr(prayerData[3])
+                .asr(prayerData[4])
+                .isha(prayerData[5])
                 .city(city)
                 .build();
     }
@@ -82,9 +86,8 @@ public class PrayerScraper {
         int date = Integer.parseInt(data[0]);
         String monthName = monthlyPrayerElement.getText();
         LocalDate prayerDay = LocalDate.of(Year.now().getValue(), toMonth(monthName), date);
-
         prayerDay.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("en"));
-
+        
         return prayerDay;
     }
     private int toMonth(String monthName) {
