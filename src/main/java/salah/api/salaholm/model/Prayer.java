@@ -18,7 +18,7 @@ public class Prayer {
     private UUID id;
 
     private String hijri;
-    private String georgian;
+    private String gregorian;
 
     private String fajr;
     private String sunrise;

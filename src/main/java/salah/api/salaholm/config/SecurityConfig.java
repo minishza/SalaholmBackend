@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
@@ -13,12 +14,11 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import salah.api.salaholm.mapper.PrayerMapper;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
@@ -67,5 +67,16 @@ public class SecurityConfig {
                         StaleElementReferenceException.class,
                         NoSuchElementException.class)
                 );
+    }
+
+    @Bean
+    @Scope("prototype")
+    public SimpleDateFormat dateFormatter() {
+        return new SimpleDateFormat("EEEE d MMMM, y", Locale.ENGLISH);
+    }
+
+    @Bean
+    public PrayerMapper prayerMapper(SimpleDateFormat dateFormatter) {
+        return new PrayerMapper(dateFormatter);
     }
 }
