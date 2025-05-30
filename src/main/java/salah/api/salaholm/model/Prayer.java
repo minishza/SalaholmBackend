@@ -1,24 +1,29 @@
 package salah.api.salaholm.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(schema = "daily_prayers")
+@Table
 public class Prayer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
 
     private String hijri;
-    private String gregorian;
+
+    @OneToOne(mappedBy = "prayer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Gregorian gregorian;
 
     private String fajr;
     private String sunrise;

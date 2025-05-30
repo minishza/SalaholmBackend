@@ -2,16 +2,13 @@ package salah.api.salaholm.mapper;
 
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import lombok.AllArgsConstructor;
-import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
+import salah.api.salaholm.model.Gregorian;
 import salah.api.salaholm.model.Prayer;
 
 import java.text.SimpleDateFormat;
 import java.time.Year;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -19,11 +16,12 @@ public class PrayerMapper implements PrayerMapperInterface {
     private SimpleDateFormat formatter;
 
     @Override
-    public Prayer toPrayer(WebElement webElement, String city, String month) {
+    public Prayer toPrayer(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
-        return
-                hijriAndGregorianCalendarPrayer(prayerData, month)
+        Map<String, ?> prayerCalendars = hijriAndGregorianCalendarPrayer(prayerData, month);
+
+        Prayer prayer = Prayer.builder()
                 .fajr(prayerData[1])
                 .sunrise(prayerData[2])
                 .zuhr(prayerData[3])
@@ -31,12 +29,18 @@ public class PrayerMapper implements PrayerMapperInterface {
                 .maghrib(prayerData[5])
                 .isha(prayerData[6])
                 .city(city)
+                .hijri((String) prayerCalendars.get("hijri"))
                 .build();
+
+        Gregorian gregorian = toGregorianCalendarPrayer((GregorianCalendar) prayerCalendars.get("gregorian"), prayer);
+
+        prayer.setGregorian(gregorian);
+
+        return prayer;
     }
 
-
-    private String[] parseWebElement(WebElement prayerElement) {
-        return prayerElement.getText().split(" ");
+    private String[] parseWebElement(String prayerElement) {
+        return prayerElement.split(" ");
     }
 
     private int toMonth(String monthName) {
@@ -58,8 +62,19 @@ public class PrayerMapper implements PrayerMapperInterface {
 
         return swedishMonthMap.get(monthName.toLowerCase());
     }
+    private Gregorian toGregorianCalendarPrayer(GregorianCalendar calendar, Prayer prayer) {
+        formatter.setCalendar(calendar);
+        String[] formattedGregorian = formatter.format(calendar.getTime()).split(" ");
+        return new Gregorian(
+                Integer.parseInt(formattedGregorian[1]),
+                formattedGregorian[0],
+                formattedGregorian[2],
+                Integer.parseInt(formattedGregorian[3]),
+                prayer
+        );
+    }
 
-    private Prayer.PrayerBuilder hijriAndGregorianCalendarPrayer(String[] data, String monthName) {
+    private Map<String, ?> hijriAndGregorianCalendarPrayer(String[] data, String monthName) {
         int date = Integer.parseInt(data[0]);
         int month = toMonth(monthName);
         int year = Year.now().getValue();
@@ -71,11 +86,9 @@ public class PrayerMapper implements PrayerMapperInterface {
         formatter.setCalendar(hijriCalendar);
         String formattedHijri = formatter.format(hijriCalendar.getTime());
 
-        formatter.setCalendar(gregorianCalendar);
-        String formattedGregorian = formatter.format(gregorianCalendar.getTime());
-
-        return Prayer.builder()
-                .hijri(formattedHijri)
-                .gregorian(formattedGregorian);
+        return Map.of(
+          "gregorian", gregorianCalendar,
+                "hijri", formattedHijri
+        );
     }
 }

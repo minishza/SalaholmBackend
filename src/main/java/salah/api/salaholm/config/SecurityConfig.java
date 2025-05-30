@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import salah.api.salaholm.mapper.PrayerMapper;
+import salah.api.salaholm.scraper.util.RetryWait;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -72,11 +73,16 @@ public class SecurityConfig {
     @Bean
     @Scope("prototype")
     public SimpleDateFormat dateFormatter() {
-        return new SimpleDateFormat("EEEE d MMMM, y", Locale.ENGLISH);
+        return new SimpleDateFormat("EEEE d MMMM y", Locale.ENGLISH);
     }
 
     @Bean
     public PrayerMapper prayerMapper(SimpleDateFormat dateFormatter) {
         return new PrayerMapper(dateFormatter);
+    }
+
+    @Bean
+    public RetryWait retryWait(ChromeDriver driver) {
+        return new RetryWait(driver);
     }
 }

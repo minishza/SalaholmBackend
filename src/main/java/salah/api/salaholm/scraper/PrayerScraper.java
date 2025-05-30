@@ -6,14 +6,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.model.Prayer;
 import salah.api.salaholm.repository.PrayerRepository;
+import salah.api.salaholm.scraper.util.RetryWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 import static salah.api.salaholm.config.Constants.*;
 
@@ -23,55 +25,58 @@ import static salah.api.salaholm.config.Constants.*;
 public class PrayerScraper {
     private final ChromeDriver chromeWebDriver;
     private final PrayerRepository prayerRepository;
-    private final FluentWait<ChromeDriver> waitForPrayersToLoad;
+    private final RetryWait retryWait;
     private final PrayerMapper prayerMapper;
 
     public void getPrayerTimesFromIslamiska() {
         chromeWebDriver.get(ISLAMISKA_CONNECTION_URL);
         List<WebElement> cityOptionsList = getOptionsList(ISLAMISKA_CITIES_OPTIONS);
-
         for (WebElement city: cityOptionsList) {
             city.click();
 
-            String cityName = city.getText();
-            getMonthlyCityPrayerFromIslamiska(cityName);
+            String currentCityName = city.getText();
+            getMonthlyCityPrayerFromIslamiska(currentCityName);
+
+            if (LAST_CITY.equalsIgnoreCase(currentCityName)) {
+                log.info("Last city scraped");
+                break;
+            }
         }
 
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
     }
 
     private void getMonthlyCityPrayerFromIslamiska(String city) {
-        List<WebElement> monthOptionsList = getOptionsList(ISLAMISKA_MONTH_OPTIONS);
-
-        for (WebElement month: monthOptionsList) {
+        for (int i = 0; i < 12; i++) {
+            WebElement month = getOptionsList(ISLAMISKA_MONTH_OPTIONS)
+                    .get(i);
             String monthName = month.getText();
             log.info("{} of city {}", monthName, city);
 
-            String previousTable = getPrayerTableInContext();
+            getOptionsList(ISLAMISKA_MONTH_OPTIONS).get(i).click();
 
-            month.click();
-            waitForPrayersToLoad.until(d -> !previousTable.equals(getPrayerTableInContext()));
-            waitForPrayersToLoad();
-
-            List<Prayer> prayerRows = chromeWebDriver
-                    .findElements(By.cssSelector(ISLAMISKA_PRAYERS_TABLE))
+            List<Prayer> prayerRows = getPrayerTable()
                     .stream()
                     .map(element -> prayerMapper.toPrayer(element, city, monthName))
+                    .filter(Objects::nonNull)
                     .toList();
 
             prayerRepository.saveAll(prayerRows);
         }
     }
 
-    private String getPrayerTableInContext() {
-        WebElement prayerTable = waitForPrayersToLoad.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(ISLAMISKA_PRAYERS_TABLE)));
-        return prayerTable.getText();
-    }
     private List<WebElement> getOptionsList(String option) {
-        return chromeWebDriver.findElements(By.cssSelector(option));
+        By optionBy = By.cssSelector(option);
+        return retryWait.retryWhileLoop(optionBy);
     }
-    private void waitForPrayersToLoad() {
-        chromeWebDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
+
+    private List<String> getPrayerTable() {
+        By prayerTableSelector = By.cssSelector(ISLAMISKA_PRAYERS_TABLE);
+
+        new WebDriverWait(chromeWebDriver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.presenceOfElementLocated(prayerTableSelector));
+
+        return retryWait.retry(prayerTableSelector);
     }
 
 }
