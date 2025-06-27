@@ -3,8 +3,8 @@ package salah.api.salaholm.mapper;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import salah.api.salaholm.model.Gregorian;
-import salah.api.salaholm.model.Prayer;
+import salah.api.salaholm.entity.Gregorian;
+import salah.api.salaholm.entity.Prayer;
 
 import java.text.SimpleDateFormat;
 import java.time.Year;

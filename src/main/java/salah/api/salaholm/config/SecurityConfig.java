@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.scraper.util.RetryWait;
+import salah.api.salaholm.util.RetryWait;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;

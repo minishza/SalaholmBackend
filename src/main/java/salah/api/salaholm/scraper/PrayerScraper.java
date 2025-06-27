@@ -9,15 +9,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.model.Prayer;
+import salah.api.salaholm.entity.Prayer;
 import salah.api.salaholm.repository.PrayerRepository;
-import salah.api.salaholm.scraper.util.RetryWait;
+import salah.api.salaholm.util.RetryWait;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
-import static salah.api.salaholm.config.Constants.*;
+import static salah.api.salaholm.util.Constants.*;
 
 @Component
 @Slf4j
@@ -28,8 +28,8 @@ public class PrayerScraper {
     private final RetryWait retryWait;
     private final PrayerMapper prayerMapper;
 
-    public void getPrayerTimesFromIslamiska() {
-        chromeWebDriver.get(ISLAMISKA_CONNECTION_URL);
+    private void getPrayerTimesFromIslamiska() {
+        createConnectionToIslamiska();
         List<WebElement> cityOptionsList = getOptionsList(ISLAMISKA_CITIES_OPTIONS);
         for (WebElement city: cityOptionsList) {
             city.click();
@@ -43,10 +43,10 @@ public class PrayerScraper {
             }
         }
 
-        log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
     }
 
-    private void getMonthlyCityPrayerFromIslamiska(String city) {
+    public void getMonthlyCityPrayerFromIslamiska(String city) {
+        createConnectionToIslamiska();
         for (int i = 0; i < 12; i++) {
             WebElement month = getOptionsList(ISLAMISKA_MONTH_OPTIONS)
                     .get(i);
@@ -63,6 +63,8 @@ public class PrayerScraper {
 
             prayerRepository.saveAll(prayerRows);
         }
+
+        log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
     }
 
     private List<WebElement> getOptionsList(String option) {
@@ -77,6 +79,10 @@ public class PrayerScraper {
                 .until(ExpectedConditions.presenceOfElementLocated(prayerTableSelector));
 
         return retryWait.retry(prayerTableSelector);
+    }
+
+    private void createConnectionToIslamiska() {
+        chromeWebDriver.get(ISLAMISKA_CONNECTION_URL);
     }
 
 }

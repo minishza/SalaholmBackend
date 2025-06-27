@@ -3,9 +3,11 @@ package salah.api.salaholm.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import salah.api.salaholm.model.Prayer;
+import salah.api.salaholm.entity.Prayer;
 import salah.api.salaholm.repository.PrayerRepository;
+import salah.api.salaholm.scraper.PrayerScraper;
 
 import java.util.List;
 
@@ -14,6 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrayerController {
     private final PrayerRepository prayerRepository;
+    private final PrayerScraper prayerScraper;
+
+    @GetMapping("/city")
+    public List<Prayer> prayer(@RequestParam String city) {
+        if (prayerRepository.findPrayersByCity(city).size() < 12) {
+            prayerScraper.getMonthlyCityPrayerFromIslamiska(city);
+        }
+        return prayerRepository.findPrayersByCity(city);
+    }
 
     @GetMapping("/test")
     public List<Prayer> test() {

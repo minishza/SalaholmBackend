@@ -1,4 +1,4 @@
-package salah.api.salaholm.model;
+package salah.api.salaholm.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package salah.api.salaholm.config;
+package salah.api.salaholm.util;
 
 import org.springframework.stereotype.Component;
 

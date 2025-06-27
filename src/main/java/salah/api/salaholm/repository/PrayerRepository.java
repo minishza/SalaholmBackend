@@ -2,8 +2,8 @@ package salah.api.salaholm.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import salah.api.salaholm.model.Gregorian;
-import salah.api.salaholm.model.Prayer;
+import salah.api.salaholm.entity.Gregorian;
+import salah.api.salaholm.entity.Prayer;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PrayerRepository extends JpaRepository<Prayer, Long> {
     List<Prayer> findAllByCity(String city);
-    Optional<Prayer> findPrayerByIdAndCity(Long id, String city);
-    List<Prayer> findPrayersByCity(String city);
-    Optional<Prayer> findPrayerByGregorian(Gregorian gregorian);
+    Optional<Prayer> findByGregorian(Gregorian gregorian);
+    List<Prayer> findAllByHijriMonth(String month);
+
 }
