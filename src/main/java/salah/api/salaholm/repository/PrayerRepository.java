@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface PrayerRepository extends JpaRepository<Prayer, Long> {
     List<Prayer> findAllByCity(String city);
     Optional<Prayer> findByGregorian(Gregorian gregorian);
-    List<Prayer> findAllByHijriMonth(String month);
-
 }

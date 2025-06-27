@@ -7,9 +7,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.entity.Prayer;
+import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.repository.PrayerRepository;
 import salah.api.salaholm.util.RetryWait;
 
@@ -45,6 +46,7 @@ public class PrayerScraper {
 
     }
 
+    @Async
     public void getMonthlyCityPrayerFromIslamiska(String city) {
         createConnectionToIslamiska();
         for (int i = 0; i < 12; i++) {

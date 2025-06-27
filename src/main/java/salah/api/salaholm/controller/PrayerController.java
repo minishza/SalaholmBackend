@@ -20,10 +20,10 @@ public class PrayerController {
 
     @GetMapping("/city")
     public List<Prayer> prayer(@RequestParam String city) {
-        if (prayerRepository.findPrayersByCity(city).size() < 12) {
+        if (prayerRepository.findAllByCity(city).size() < 12) {
             prayerScraper.getMonthlyCityPrayerFromIslamiska(city);
         }
-        return prayerRepository.findPrayersByCity(city);
+        return prayerRepository.findAllByCity(city);
     }
 
     @GetMapping("/test")
