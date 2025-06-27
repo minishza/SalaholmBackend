@@ -1,6 +1,7 @@
 package salah.api.salaholm.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ public class PrayerController {
     private final PrayerRepository prayerRepository;
     private final PrayerScraper prayerScraper;
 
+    @Cacheable("prayersByCity")
     @GetMapping("/city")
     public List<Prayer> prayer(@RequestParam String city) {
         if (prayerRepository.findAllByCity(city).size() < 12) {

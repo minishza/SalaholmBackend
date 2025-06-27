@@ -1,9 +1,13 @@
 package salah.api.salaholm.config;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -21,17 +25,19 @@ import salah.api.salaholm.util.RetryWait;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
 @EnableAsync
+@EnableCaching
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers( "/prayer/**").permitAll()
+                        .requestMatchers( "/prayer/**", "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
@@ -86,5 +92,17 @@ public class SecurityConfig {
     @Bean
     public RetryWait retryWait(ChromeDriver driver) {
         return new RetryWait(driver);
+    }
+
+    @Bean
+    public Caffeine caffeineConfig() {
+        return Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES);
+    }
+    @Bean
+    public CacheManager cacheManager(Caffeine caffeine) {
+        CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager("prayersByCity");
+        caffeineCacheManager.setAllowNullValues(false);
+        caffeineCacheManager.setCaffeine(caffeine);
+        return caffeineCacheManager;
     }
 }
