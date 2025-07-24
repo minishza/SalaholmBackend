@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.Prayer;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.repository.PrayerRepository;
+import salah.api.salaholm.util.Constants;
 import salah.api.salaholm.util.RetryWait;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
 import static salah.api.salaholm.util.Constants.*;
 
@@ -29,16 +29,16 @@ public class PrayerScraper {
     private final RetryWait retryWait;
     private final PrayerMapper prayerMapper;
 
-    private void getPrayerTimesFromIslamiska() {
-        createConnectionToIslamiska();
-        List<WebElement> cityOptionsList = getOptionsList(ISLAMISKA_CITIES_OPTIONS);
+    private void getCityPrayerTimesFromIslamiska(String fromCity) {
+        connectToIslamiskaForbundetSite();
+        List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
         for (WebElement city: cityOptionsList) {
             city.click();
 
             String currentCityName = city.getText();
-            getMonthlyCityPrayerFromIslamiska(currentCityName);
+            getIslamiskaAnnualPrayers(currentCityName);
 
-            if (LAST_CITY.equalsIgnoreCase(currentCityName)) {
+            if (fromCity.equalsIgnoreCase(currentCityName)) {
                 log.info("Last city scraped");
                 break;
             }
@@ -46,21 +46,27 @@ public class PrayerScraper {
 
     }
 
+
+
     @Async
-    public void getMonthlyCityPrayerFromIslamiska(String city) {
-        createConnectionToIslamiska();
+    public void getIslamiskaAnnualPrayers(String city) {
+        connectToIslamiskaForbundetSite();
+
         for (int i = 0; i < 12; i++) {
-            WebElement month = getOptionsList(ISLAMISKA_MONTH_OPTIONS)
-                    .get(i);
+            WebElement month = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i);
+
             String monthName = month.getText();
             log.info("{} of city {}", monthName, city);
 
-            getOptionsList(ISLAMISKA_MONTH_OPTIONS).get(i).click();
+            getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i).click();
 
             List<Prayer> prayerRows = getPrayerTable()
                     .stream()
-                    .map(element -> prayerMapper.toPrayer(element, city, monthName))
-                    .filter(Objects::nonNull)
+                    .map(element -> {
+                        Prayer p = prayerMapper.toPrayer(element, city, monthName);
+                        if (p == null) throw new IllegalStateException("Null prayer generated"); //add custom exception
+                        return p;
+                    })
                     .toList();
 
             prayerRepository.saveAll(prayerRows);
@@ -69,9 +75,9 @@ public class PrayerScraper {
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
     }
 
-    private List<WebElement> getOptionsList(String option) {
-        By optionBy = By.cssSelector(option);
-        return retryWait.retryWhileLoop(optionBy);
+    private List<WebElement> getIslamiskaMonthsList(String options) {
+        By optionBy = By.cssSelector(options);
+        return retryWait.retryForLoop(optionBy);
     }
 
     private List<String> getPrayerTable() {
@@ -83,7 +89,7 @@ public class PrayerScraper {
         return retryWait.retry(prayerTableSelector);
     }
 
-    private void createConnectionToIslamiska() {
+    private void connectToIslamiskaForbundetSite() {
         chromeWebDriver.get(ISLAMISKA_CONNECTION_URL);
     }
 

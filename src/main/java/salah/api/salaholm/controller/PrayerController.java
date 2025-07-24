@@ -21,7 +21,7 @@ public class PrayerController {
     @GetMapping("/city")
     public List<Prayer> prayer(@RequestParam String city) {
         if (prayerRepository.findAllByCity(city).size() < 12) {
-            prayerScraper.getMonthlyCityPrayerFromIslamiska(city);
+            prayerScraper.getIslamiskaAnnualPrayers(city);
         }
         return prayerRepository.findAllByCity(city);
     }

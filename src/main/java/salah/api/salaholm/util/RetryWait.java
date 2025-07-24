@@ -8,26 +8,21 @@ import java.util.List;
 @Slf4j
 public class RetryWait {
     private final WebDriver driver;
+    private final int TIMES_TO_RETRY = 5;
 
     public RetryWait(WebDriver driver) {
         this.driver = driver;
     }
 
-    public List<WebElement> retryWhileLoop(By locator) {
-        return retryWhileLoop(locator, 5);
-    }
-
-    public List<WebElement> retryWhileLoop(By locator, int timesToRetry) {
+    public List<WebElement> retryForLoop(By locator) {
         List<WebElement> foundElement = null;
-        int repeat = 0;
-        while(repeat <= timesToRetry) {
+        for (int repeat = 0; repeat < TIMES_TO_RETRY; repeat++) {
             try {
                 foundElement = driver.findElements(locator);
                 break;
             } catch(StaleElementReferenceException exc) {
                 exc.printStackTrace();
             }
-            repeat++;
         }
 
         if (foundElement == null) {
