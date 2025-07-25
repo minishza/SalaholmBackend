@@ -1,4 +1,4 @@
-package salah.api.salaholm.entity;
+package salah.api.salaholm.entity.location;
 
 public class Coordinates {
     private int latitude;

@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import salah.api.salaholm.entity.Prayer;
+import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.repository.PrayerRepository;
 import salah.api.salaholm.util.Constants;

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import salah.api.salaholm.entity.Prayer;
+import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.repository.PrayerRepository;
 import salah.api.salaholm.scraper.PrayerScraper;
 

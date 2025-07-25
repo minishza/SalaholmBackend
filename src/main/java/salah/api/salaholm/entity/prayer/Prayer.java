@@ -1,4 +1,4 @@
-package salah.api.salaholm.entity;
+package salah.api.salaholm.entity.prayer;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import salah.api.salaholm.entity.calendar.Gregorian;
 
 import java.util.List;
 
@@ -16,7 +17,6 @@ import java.util.List;
 @Entity
 @Table
 public class Prayer {
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

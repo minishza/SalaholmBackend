@@ -1,8 +1,9 @@
-package salah.api.salaholm.entity;
+package salah.api.salaholm.entity.calendar;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import salah.api.salaholm.entity.prayer.Prayer;
 
 import java.util.UUID;
 

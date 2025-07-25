@@ -1,4 +1,4 @@
-package salah.api.salaholm.entity;
+package salah.api.salaholm.entity.prayer;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
