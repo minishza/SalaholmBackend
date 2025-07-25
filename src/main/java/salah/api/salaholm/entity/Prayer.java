@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,12 +27,9 @@ public class Prayer {
     @JsonManagedReference
     private Gregorian gregorian;
 
-    private String fajr;
-    private String sunrise;
-    private String zuhr;
-    private String asr;
-    private String maghrib;
-    private String isha;
+    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PrayerTime> prayerTimes;
 
     private String city;
 }

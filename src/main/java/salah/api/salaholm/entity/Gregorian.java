@@ -21,7 +21,7 @@ public class Gregorian {
     @OneToOne
     @JoinColumn(name = "prayer_id")
     @JsonBackReference
-    Prayer prayer;
+    private Prayer prayer;
 
     public Gregorian(int i, String s, String s1, int i1, Prayer prayer) {
         this.date = i;
