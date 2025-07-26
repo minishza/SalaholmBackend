@@ -1,6 +1,5 @@
 package salah.api.salaholm.entity.location;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import salah.api.salaholm.entity.prayer.Prayer;
 
@@ -17,11 +16,9 @@ public class Location {
     private int population;
 
     @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private Coordinates coordinates;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "prayer", cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
-    @JsonManagedReference
     private List<Prayer> prayers;
 }

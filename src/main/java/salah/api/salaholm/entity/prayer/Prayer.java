@@ -1,6 +1,5 @@
 package salah.api.salaholm.entity.prayer;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +27,9 @@ public class Prayer {
     private Set<PrayerCalendar> prayerCalendars = new HashSet<>();
 
     @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<PrayerTime> prayerTimes = new ArrayList<>();
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name="location_id", nullable=false)
     private Location location;
 }
