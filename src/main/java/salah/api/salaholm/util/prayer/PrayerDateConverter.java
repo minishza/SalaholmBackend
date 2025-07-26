@@ -16,7 +16,7 @@ import java.util.*;
 public class PrayerDateConverter {
     private SimpleDateFormat formatter;
 
-    public Set<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
+    public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
         int date = Integer.parseInt(data[0]);
         var gregorianCalendar = prepareGregorianBuilder(date, monthName);
         var hijriCalendar = new UmmalquraCalendar();
@@ -25,7 +25,7 @@ public class PrayerDateConverter {
         var gregorianPrayerCalendar = toPrayerCalendarOfGregorian(gregorianCalendar, prayer);
         var hijriPrayerCalendar = toPrayerCalendarOfHijri(hijriCalendar, prayer);
 
-        return Set.of(gregorianPrayerCalendar, hijriPrayerCalendar);
+        return List.of(gregorianPrayerCalendar, hijriPrayerCalendar);
     }
 
     private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayer prayer) {

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import salah.api.salaholm.entity.prayer.Prayer;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table
@@ -19,8 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Location {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private Long id;
     private String municipality;
 
     @OneToOne(mappedBy = "location",  cascade = CascadeType.ALL)

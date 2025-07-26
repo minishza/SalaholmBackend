@@ -8,7 +8,6 @@ import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Location;
 
 import java.util.List;
-import java.util.Set;
 
 @Builder
 @Getter
@@ -18,12 +17,12 @@ import java.util.Set;
 @AllArgsConstructor
 public class Prayer {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
     @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<PrayerCalendar> prayerCalendars;
+    private List<PrayerCalendar> prayerCalendars;
 
     @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

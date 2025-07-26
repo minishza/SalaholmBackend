@@ -21,7 +21,7 @@ public class PrayerMapper implements PrayerMapperInterface {
 
         Prayer prayer = Prayer.builder().build();
 
-        Set<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
+        List<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
         prayer.setPrayerCalendars(calendars);
 
         List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, prayer);

@@ -25,6 +25,8 @@ public class LocationProvider {
         coordinates.setLocation(location);
         location.setCoordinates(coordinates);
 
+        location.setId(hashToLong(city));
+
         return location;
     }
 
@@ -59,5 +61,8 @@ public class LocationProvider {
         JOpenCageResponse response = jOpenCageGeocoder.forward(request);
 
         return response.getResults().get(0);
+    }
+    private Long hashToLong(String input) {
+        return input.hashCode() & 0xffffffffL;
     }
 }

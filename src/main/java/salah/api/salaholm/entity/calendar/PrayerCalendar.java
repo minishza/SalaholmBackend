@@ -6,6 +6,8 @@ import lombok.*;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
+import java.util.UUID;
+
 @Entity
 @RequiredArgsConstructor
 @Builder
@@ -14,8 +16,8 @@ import salah.api.salaholm.util.CalendarType;
 @Setter
 public class PrayerCalendar {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private int date;
     private String dayOfWeek;

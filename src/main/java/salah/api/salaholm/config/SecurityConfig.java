@@ -26,7 +26,6 @@ import java.util.*;
 
 @Configuration
 @EnableWebSecurity
-@EnableAsync
 public class SecurityConfig {
 
     @Bean

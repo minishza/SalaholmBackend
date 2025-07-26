@@ -33,7 +33,6 @@ public class PrayerScraper {
     private final PrayerMapper prayerMapper;
     private final LocationProvider locationProvider;
 
-    @Async
     public void getCityPrayerTimesFromIslamiska(String fromCity) {
         connectToIslamiskaForbundetSite();
         List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
@@ -50,7 +49,6 @@ public class PrayerScraper {
 
     }
 
-    @Async
     public void getIslamiskaAnnualPrayers(String city) {
         connectToIslamiskaForbundetSite();
         Location location = locationProvider.prepareLocationBuilder(city);
