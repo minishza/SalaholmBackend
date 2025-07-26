@@ -50,13 +50,15 @@ public class PrayerDateConverter {
     }
 
     private CalendarData toCalendarData(GregorianCalendar calendar) {
-        String[] formattedData = formatter.format(calendar.getTime()).split(",");
+        String formattedCalendar = formatter.format(calendar.getTime());
+
+        String[] formattedData = formattedCalendar.split("\\s*,\\s*");
         int date = Integer.parseInt(formattedData[1]);
         String day = formattedData[0];
         String month = formattedData[2];
         int year = Integer.parseInt(formattedData[3]);
 
-        return new CalendarData(date, day, month, year);
+        return new CalendarData(date, day, month, year, formattedCalendar);
     }
 
     private PrayerCalendar.PrayerCalendarBuilder buildPrayerCalendar(CalendarData calendarData) {
@@ -65,6 +67,7 @@ public class PrayerDateConverter {
                 .dayOfWeek(calendarData.day)
                 .month(calendarData.month)
                 .year(calendarData.year)
+                .formattedCalendar(calendarData.formatted)
                 .important(false);
     }
 
@@ -95,5 +98,5 @@ public class PrayerDateConverter {
         return new GregorianCalendar(year, month, date);
     }
 
-    private record CalendarData(int date, String day, String month, int year) {}
+    private record CalendarData(int date, String day, String month, int year, String formatted) {}
 }
