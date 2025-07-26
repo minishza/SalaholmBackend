@@ -9,10 +9,7 @@ import salah.api.salaholm.util.CalendarType;
 
 import java.text.SimpleDateFormat;
 import java.time.Year;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -53,7 +50,7 @@ public class PrayerDateConverter {
     }
 
     private CalendarData toCalendarData(GregorianCalendar calendar) {
-        String[] formattedData = formatter.format(calendar.getTime()).split(" ");
+        String[] formattedData = formatter.format(calendar.getTime()).split(",");
         int date = Integer.parseInt(formattedData[1]);
         String day = formattedData[0];
         String month = formattedData[2];

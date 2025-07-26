@@ -78,7 +78,7 @@ public class SecurityConfig {
     @Bean
     @Scope("prototype")
     public SimpleDateFormat dateFormatter() {
-        return new SimpleDateFormat("EEEE d MMMM y", Locale.ENGLISH);
+        return new SimpleDateFormat("EEEE,d,MMMM,y", Locale.ENGLISH);
     }
 
     @Bean
