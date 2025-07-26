@@ -19,17 +19,13 @@ public class PrayerMapper implements PrayerMapperInterface {
     public Prayer toPrayer(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
-        Prayer prayer = Prayer.builder()
-                .build();
+        Prayer prayer = Prayer.builder().build();
 
         Set<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
         prayer.setPrayerCalendars(calendars);
 
         List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, prayer);
         prayer.setPrayerTimes(dailyPrayers);
-
-
-
 
         return prayer;
     }

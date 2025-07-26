@@ -1,6 +1,11 @@
 package salah.api.salaholm.entity.location;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import salah.api.salaholm.entity.prayer.Prayer;
 
 import java.util.List;
@@ -8,17 +13,21 @@ import java.util.UUID;
 
 @Entity
 @Table
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String municipality;
-    private int population;
 
-    @OneToOne(mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "location",  cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Coordinates coordinates;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "prayer", cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Prayer> prayers;
 }

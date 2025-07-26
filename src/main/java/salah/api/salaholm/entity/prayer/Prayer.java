@@ -1,35 +1,36 @@
 package salah.api.salaholm.entity.prayer;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Location;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Prayer {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PrayerCalendar> prayerCalendars = new HashSet<>();
+    @JsonManagedReference
+    private Set<PrayerCalendar> prayerCalendars;
 
     @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PrayerTime> prayerTimes = new ArrayList<>();
+    @JsonManagedReference
+    private List<PrayerTime> prayerTimes;
 
     @ManyToOne
-    @JoinColumn(name="location_id", nullable=false)
+    @JoinColumn(name="cart_id", nullable=false)
+    @JsonBackReference
     private Location location;
 }

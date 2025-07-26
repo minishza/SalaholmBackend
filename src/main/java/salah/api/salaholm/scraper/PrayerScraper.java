@@ -9,48 +9,51 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.repository.PrayerRepository;
+import salah.api.salaholm.repository.LocationPrayerRepository;
 import salah.api.salaholm.util.Constants;
 import salah.api.salaholm.util.RetryWait;
+import salah.api.salaholm.util.parser.LocationProvider;
 
 import java.time.Duration;
 import java.util.List;
 
-import static salah.api.salaholm.util.Constants.*;
+import static salah.api.salaholm.util.Constants.ISLAMISKA_CONNECTION_URL;
+import static salah.api.salaholm.util.Constants.ISLAMISKA_PRAYERS_TABLE;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class PrayerScraper {
     private final ChromeDriver chromeWebDriver;
-    private final PrayerRepository prayerRepository;
+    private final LocationPrayerRepository prayerRepository;
     private final RetryWait retryWait;
     private final PrayerMapper prayerMapper;
+    private final LocationProvider locationProvider;
 
-    private void getCityPrayerTimesFromIslamiska(String fromCity) {
+    @Async
+    public void getCityPrayerTimesFromIslamiska(String fromCity) {
         connectToIslamiskaForbundetSite();
         List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
         for (WebElement city: cityOptionsList) {
             city.click();
 
             String currentCityName = city.getText();
-            getIslamiskaAnnualPrayers(currentCityName);
 
             if (fromCity.equalsIgnoreCase(currentCityName)) {
-                log.info("Last city scraped");
+                getIslamiskaAnnualPrayers(currentCityName);
                 break;
             }
         }
 
     }
 
-
-
     @Async
     public void getIslamiskaAnnualPrayers(String city) {
         connectToIslamiskaForbundetSite();
+        Location location = locationProvider.prepareLocationBuilder(city);
 
         for (int i = 0; i < 12; i++) {
             WebElement month = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i);
@@ -65,11 +68,14 @@ public class PrayerScraper {
                     .map(element -> {
                         Prayer p = prayerMapper.toPrayer(element, city, monthName);
                         if (p == null) throw new IllegalStateException("Null prayer generated"); //add custom exception
+                        p.setLocation(location);
                         return p;
                     })
                     .toList();
 
-            prayerRepository.saveAll(prayerRows);
+            location.setPrayers(prayerRows);
+
+            prayerRepository.save(location);
         }
 
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);

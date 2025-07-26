@@ -21,7 +21,7 @@ public class PrayerDateConverter {
 
     public Set<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
         int date = Integer.parseInt(data[0]);
-        var gregorianCalendar = buildGregorianCalendar(date, monthName);
+        var gregorianCalendar = prepareGregorianBuilder(date, monthName);
         var hijriCalendar = new UmmalquraCalendar();
         hijriCalendar.setTime(gregorianCalendar.getTime());
 
@@ -91,7 +91,7 @@ public class PrayerDateConverter {
         return swedishMonthMap.get(monthName.toLowerCase());
     }
 
-    private GregorianCalendar buildGregorianCalendar(int date, String monthName) {
+    private GregorianCalendar prepareGregorianBuilder(int date, String monthName) {
         int month = toMonth(monthName);
         int year = Year.now().getValue();
 

@@ -1,9 +1,8 @@
 package salah.api.salaholm.entity.calendar;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
@@ -11,6 +10,8 @@ import salah.api.salaholm.util.CalendarType;
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
+@Getter
+@Setter
 public class PrayerCalendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +27,6 @@ public class PrayerCalendar {
 
     @ManyToOne
     @JoinColumn(name = "prayer_id", nullable = false)
+    @JsonBackReference
     private Prayer prayer;
 }

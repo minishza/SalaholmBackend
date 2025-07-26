@@ -16,8 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.util.prayer.PrayerDateConverter;
 import salah.api.salaholm.util.RetryWait;
+import salah.api.salaholm.util.parser.LocationProvider;
+import salah.api.salaholm.util.prayer.PrayerDateConverter;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -33,6 +34,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers( "/prayer/**").permitAll()
+                        .requestMatchers( "/prayer/address").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
@@ -87,6 +89,11 @@ public class SecurityConfig {
     @Bean
     public PrayerMapper prayerMapper(PrayerDateConverter prayerDateConverter) {
         return new PrayerMapper(prayerDateConverter);
+    }
+
+    @Bean
+    public LocationProvider locationProvider() {
+        return new LocationProvider();
     }
 
     @Bean

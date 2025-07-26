@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import salah.api.salaholm.entity.prayer.Prayer;
-import salah.api.salaholm.repository.PrayerRepository;
+import salah.api.salaholm.entity.location.Location;
+import salah.api.salaholm.repository.LocationPrayerRepository;
 import salah.api.salaholm.scraper.PrayerScraper;
+import salah.api.salaholm.util.parser.LocationProvider;
 
 import java.util.List;
 
@@ -15,19 +16,19 @@ import java.util.List;
 @RequestMapping("/prayer")
 @RequiredArgsConstructor
 public class PrayerController {
-    private final PrayerRepository prayerRepository;
+    private final LocationPrayerRepository prayerRepository;
     private final PrayerScraper prayerScraper;
+    private final LocationProvider locationProvider;
 
-    @GetMapping("/city")
-    public List<Prayer> prayer(@RequestParam String city) {
-        if (prayerRepository.findAllByCity(city).size() < 12) {
-            prayerScraper.getIslamiskaAnnualPrayers(city);
-        }
-        return prayerRepository.findAllByCity(city);
-    }
 
     @GetMapping("/test")
-    public List<Prayer> test() {
+    public Location test(@RequestParam String city) {
+        prayerScraper.getIslamiskaAnnualPrayers(city);
+        return prayerRepository.findLocationByMunicipality(city);
+    }
+
+    @GetMapping("/all")
+    public List<Location> getAllLocations() {
         return prayerRepository.findAll();
     }
 }
