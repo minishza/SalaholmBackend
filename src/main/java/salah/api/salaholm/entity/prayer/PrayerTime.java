@@ -3,21 +3,28 @@ package salah.api.salaholm.entity.prayer;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import salah.api.salaholm.util.prayer.PrayerName;
 
 import java.time.Duration;
 import java.time.LocalTime;
 
 @Entity
+@Builder
 @Table
+@NoArgsConstructor
+@AllArgsConstructor
 public class PrayerTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String prayerName;
-    private int hour;
-    private int minute;
+    private PrayerName prayerName;
+    private String hour;
+    private String minute;
 
     @ManyToOne
     @JoinColumn(name = "prayer_id")
@@ -37,6 +44,6 @@ public class PrayerTime {
     }
 
     private LocalTime toLocalTime() {
-        return LocalTime.of(hour, minute);
+        return LocalTime.of(Integer.parseInt(hour), Integer.parseInt(minute));
     }
 }

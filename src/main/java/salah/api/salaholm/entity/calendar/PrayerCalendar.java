@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
 @Entity
@@ -22,4 +23,8 @@ public class PrayerCalendar {
 
     private CalendarType calendarType;
     private boolean important;
+
+    @ManyToOne
+    @JoinColumn(name = "prayer_id", nullable = false)
+    private Prayer prayer;
 }

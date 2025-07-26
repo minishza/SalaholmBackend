@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Location;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,16 +24,12 @@ public class Prayer {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    private String hijri;
+    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PrayerCalendar> prayerCalendars = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "prayer_id")
-    private Set<PrayerCalendar> prayerCalendars;
-
-    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL)
-    @JoinColumn(name = "prayer_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<PrayerTime> prayerTimes;
+    private List<PrayerTime> prayerTimes = new ArrayList<>();
 
     @ManyToOne()
     @JoinColumn(name="location_id", nullable=false)

@@ -2,8 +2,11 @@ package salah.api.salaholm.mapper;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.prayer.Prayer;
-import salah.api.salaholm.util.PrayerDateConverter;
+import salah.api.salaholm.entity.prayer.PrayerTime;
+import salah.api.salaholm.util.prayer.PrayerDateConverter;
+import salah.api.salaholm.util.prayer.PrayerName;
 
 import java.util.*;
 
@@ -16,29 +19,42 @@ public class PrayerMapper implements PrayerMapperInterface {
     public Prayer toPrayer(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
-        Map<String, ?> prayerCalendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month);
-
         Prayer prayer = Prayer.builder()
-                .fajr(prayerData[1])
-                .sunrise(prayerData[2])
-                .zuhr(prayerData[3])
-                .asr(prayerData[4])
-                .maghrib(prayerData[5])
-                .isha(prayerData[6])
-                .city(city)
-                .hijri((String) prayerCalendars.get("hijri"))
                 .build();
 
-        Gregorian gregorian = prayerDateConverter.toGregorianCalendarPrayer((GregorianCalendar) prayerCalendars.get("gregorian"), prayer);
+        Set<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
+        prayer.setPrayerCalendars(calendars);
 
-        prayer.setGregorian(gregorian);
+        List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, prayer);
+        prayer.setPrayerTimes(dailyPrayers);
+
+
+
 
         return prayer;
+    }
+
+    private List<PrayerTime> buildPrayerTimes(String[] prayerData, Prayer prayer) {
+        var prayerTimes = new ArrayList<PrayerTime>();
+        for (int prayerOrder = 1; prayerOrder < prayerData.length; prayerOrder++) {
+            prayerTimes.add(
+                    buildPrayerTimeFromString(prayerData[prayerOrder])
+                            .prayerName(PrayerName.fromIndex(prayerOrder).orElseThrow(() -> new IllegalArgumentException("Invalid enum prayer index")))
+                            .prayer(prayer)
+                            .build()
+            );
+        }
+        return prayerTimes;
+    }
+
+    private PrayerTime.PrayerTimeBuilder buildPrayerTimeFromString(String prayerData) {
+        String[] prayerHourAndMinute = prayerData.split(":");
+        return PrayerTime.builder()
+                .hour(prayerHourAndMinute[0])
+                .minute(prayerHourAndMinute[1]);
     }
 
     private String[] parseWebElement(String prayerElement) {
         return prayerElement.split(" ");
     }
-
-
 }

@@ -1,10 +1,11 @@
-package salah.api.salaholm.util;
+package salah.api.salaholm.util.prayer;
 
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.util.CalendarType;
 
 import java.text.SimpleDateFormat;
 import java.time.Year;
@@ -18,7 +19,8 @@ import java.util.Set;
 public class PrayerDateConverter {
     private SimpleDateFormat formatter;
 
-    public Set<PrayerCalendar> createHijriAndGregorianPrayerCalendars(int date, String monthName, Prayer prayer) {
+    public Set<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
+        int date = Integer.parseInt(data[0]);
         var gregorianCalendar = buildGregorianCalendar(date, monthName);
         var hijriCalendar = new UmmalquraCalendar();
         hijriCalendar.setTime(gregorianCalendar.getTime());
@@ -35,6 +37,7 @@ public class PrayerDateConverter {
 
         return buildPrayerCalendar(formattedHijri)
                 .calendarType(CalendarType.HIJRI)
+                .prayer(prayer)
                 .build();
     }
 
@@ -45,6 +48,7 @@ public class PrayerDateConverter {
 
         return buildPrayerCalendar(formattedGregorian)
                 .calendarType(CalendarType.GREGORIAN)
+                .prayer(prayer)
                 .build();
     }
 
