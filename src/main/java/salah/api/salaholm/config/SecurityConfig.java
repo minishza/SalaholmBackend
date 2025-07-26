@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import salah.api.salaholm.mapper.PrayerMapper;
+import salah.api.salaholm.util.PrayerDateConverter;
 import salah.api.salaholm.util.RetryWait;
 
 import java.text.SimpleDateFormat;
@@ -79,8 +80,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PrayerMapper prayerMapper(SimpleDateFormat dateFormatter) {
-        return new PrayerMapper(dateFormatter);
+    public PrayerDateConverter prayerCalendar(SimpleDateFormat dateFormatter) {
+        return new PrayerDateConverter(dateFormatter);
+    }
+
+    @Bean
+    public PrayerMapper prayerMapper(PrayerDateConverter prayerDateConverter) {
+        return new PrayerMapper(prayerDateConverter);
     }
 
     @Bean
