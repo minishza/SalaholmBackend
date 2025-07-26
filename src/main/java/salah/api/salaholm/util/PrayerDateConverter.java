@@ -94,5 +94,5 @@ public class PrayerDateConverter {
         return new GregorianCalendar(year, month, date);
     }
 
-    record CalendarData(int date, String day, String month, int year) {}
+    private record CalendarData(int date, String day, String month, int year) {}
 }
