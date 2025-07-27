@@ -1,21 +1,24 @@
 package salah.api.salaholm.cache;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import salah.api.salaholm.entity.location.Location;
+
+import static salah.api.salaholm.util.Constants.POPULATED_CITIES;
 
 @Component
+@RequiredArgsConstructor
 public class Warmup implements CommandLineRunner {
+    private final WarmUpService prayerService;
 
     @Override
     @Async
     public void run(String... args) {
-
-
+        warmUpPrayers();
     }
 
-    private Location warmupPrayers(String city) {
-        return null;
+    private void warmUpPrayers() {
+        POPULATED_CITIES.forEach(prayerService::warmupPrayers);
     }
 }

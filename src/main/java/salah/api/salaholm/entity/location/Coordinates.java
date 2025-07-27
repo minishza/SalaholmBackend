@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 @Entity
 @Table
@@ -14,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Coordinates implements Serializable {
+public class Coordinates {
     @Serial
     private static final long serialVersionUID = 1L;
 
