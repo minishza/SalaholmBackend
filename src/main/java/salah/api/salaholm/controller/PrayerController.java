@@ -23,7 +23,7 @@ public class PrayerController {
 
     @GetMapping("/test")
     public Location test(@RequestParam String city) {
-        prayerScraper.getIslamiskaAnnualPrayers(city);
+        prayerRepository.save(prayerScraper.getAnnualPrayersByLocation(city));
         return prayerRepository.findLocationByMunicipality(city);
     }
 

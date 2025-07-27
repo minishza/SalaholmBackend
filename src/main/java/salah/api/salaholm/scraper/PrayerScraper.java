@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayer;
@@ -33,23 +34,26 @@ public class PrayerScraper {
     private final PrayerMapper prayerMapper;
     private final LocationProvider locationProvider;
 
-    public void getCityPrayerTimesFromIslamiska(String fromCity) {
+    @Cacheable(value = "locationCache", key = "#fromCity.toLowerCase()")
+    public Location getAnnualPrayersByLocation(String fromCity) {
         connectToIslamiskaForbundetSite();
-        List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
-        for (WebElement city: cityOptionsList) {
-            city.click();
 
+        List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
+
+        for (WebElement city : cityOptionsList) {
             String currentCityName = city.getText();
 
             if (fromCity.equalsIgnoreCase(currentCityName)) {
-                getIslamiskaAnnualPrayers(currentCityName);
-                break;
+                city.click();
+                return getAnnualPrayers(currentCityName);
             }
         }
 
+        throw new IllegalArgumentException("City not found: " + fromCity);
     }
 
-    public void getIslamiskaAnnualPrayers(String city) {
+
+    public Location getAnnualPrayers(String city) {
         connectToIslamiskaForbundetSite();
         Location location = locationProvider.prepareLocationBuilder(city);
 
@@ -72,11 +76,11 @@ public class PrayerScraper {
                     .toList();
 
             location.setPrayers(new ArrayList<>(prayerRows));
-
-            prayerRepository.save(location);
         }
 
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
+
+        return location;
     }
 
     private List<WebElement> getIslamiskaMonthsList(String options) {

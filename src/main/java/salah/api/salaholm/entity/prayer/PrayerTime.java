@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import salah.api.salaholm.util.prayer.PrayerName;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalTime;
 
@@ -16,7 +18,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PrayerTime {
+public class PrayerTime implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
