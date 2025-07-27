@@ -18,10 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Prayer implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 1L;
-
 
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
