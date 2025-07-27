@@ -4,7 +4,7 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
-import salah.api.salaholm.entity.prayer.Prayers;
+import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
 import java.text.SimpleDateFormat;
@@ -16,7 +16,7 @@ import java.util.*;
 public class PrayerDateConverter {
     private SimpleDateFormat formatter;
 
-    public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayers prayer) {
+    public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
         int date = Integer.parseInt(data[0]);
         var gregorianCalendar = prepareGregorianBuilder(date, monthName);
         var hijriCalendar = new UmmalquraCalendar();
@@ -28,7 +28,7 @@ public class PrayerDateConverter {
         return List.of(gregorianPrayerCalendar, hijriPrayerCalendar);
     }
 
-    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayers prayer) {
+    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayer prayer) {
         formatter.setCalendar(hijriCalendar);
         CalendarData formattedHijri = toCalendarData(hijriCalendar);
 
@@ -39,7 +39,7 @@ public class PrayerDateConverter {
     }
 
 
-    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayers prayer) {
+    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayer prayer) {
         formatter.setCalendar(gregorianCalendar);
         CalendarData formattedGregorian = toCalendarData(gregorianCalendar);
 

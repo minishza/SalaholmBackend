@@ -3,7 +3,7 @@ package salah.api.salaholm.entity.calendar;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-import salah.api.salaholm.entity.prayer.Prayers;
+import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
 import java.io.Serial;
@@ -35,5 +35,5 @@ public class PrayerCalendar implements Serializable {
     @ManyToOne
     @JoinColumn(name = "prayer_id", nullable = false)
     @JsonBackReference
-    private Prayers prayer;
+    private Prayer prayer;
 }

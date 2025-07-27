@@ -34,7 +34,7 @@ public class PrayerTime implements Serializable {
     @ManyToOne
     @JoinColumn(name = "prayer_id", nullable = false)
     @JsonBackReference
-    private Prayers prayer;
+    private Prayer prayer;
 
     public boolean isBefore(LocalTime time) {
         return toLocalTime().isBefore(time);

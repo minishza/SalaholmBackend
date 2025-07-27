@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Prayers implements Serializable {
+public class Prayer implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class Prayers implements Serializable {
     private List<PrayerTime> prayerTimes;
 
     @ManyToOne
-    @JoinColumn(name="cart_id", nullable=false)
+    @JoinColumn(name="location_id", nullable=false)
     @JsonBackReference
     private Location location;
 }

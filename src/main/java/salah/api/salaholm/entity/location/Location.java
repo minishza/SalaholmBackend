@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import salah.api.salaholm.entity.prayer.Prayers;
+import salah.api.salaholm.entity.prayer.Prayer;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,5 +33,5 @@ public class Location implements Serializable {
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Prayers> prayers;
+    private List<Prayer> prayers;
 }

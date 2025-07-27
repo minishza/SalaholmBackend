@@ -3,7 +3,7 @@ package salah.api.salaholm.mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
-import salah.api.salaholm.entity.prayer.Prayers;
+import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.entity.prayer.PrayerTime;
 import salah.api.salaholm.util.prayer.PrayerDateConverter;
 import salah.api.salaholm.util.prayer.PrayerName;
@@ -15,10 +15,10 @@ import java.util.*;
 public class PrayerMapper {
     private PrayerDateConverter prayerDateConverter;
 
-    public Prayers toPrayer(String webElement, String city, String month) {
+    public Prayer toPrayers(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
-        Prayers prayer = Prayers.builder().build();
+        Prayer prayer = Prayer.builder().build();
 
         List<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
         prayer.setPrayerCalendars(calendars);
@@ -29,7 +29,7 @@ public class PrayerMapper {
         return prayer;
     }
 
-    private List<PrayerTime> buildPrayerTimes(String[] prayerData, Prayers prayer) {
+    private List<PrayerTime> buildPrayerTimes(String[] prayerData, Prayer prayer) {
         var prayerTimes = new ArrayList<PrayerTime>();
         for (int prayerOrder = 1; prayerOrder < prayerData.length; prayerOrder++) {
             prayerTimes.add(
