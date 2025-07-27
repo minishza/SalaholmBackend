@@ -4,6 +4,8 @@ import org.apache.ignite.springdata22.repository.IgniteRepository;
 import org.apache.ignite.springdata22.repository.config.RepositoryConfig;
 import salah.api.salaholm.entity.location.Location;
 
+import java.util.UUID;
+
 @RepositoryConfig(cacheName = "location")
-public interface LocationRepository extends IgniteRepository<Location, Long> {
+public interface LocationRepository extends IgniteRepository<Location, UUID> {
 }

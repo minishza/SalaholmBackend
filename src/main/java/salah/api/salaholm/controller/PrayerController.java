@@ -10,8 +10,6 @@ import salah.api.salaholm.repository.PrayerRepository;
 import salah.api.salaholm.scraper.PrayerScraper;
 import salah.api.salaholm.util.parser.LocationProvider;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/prayer")
 @RequiredArgsConstructor
@@ -25,10 +23,5 @@ public class PrayerController {
     public Location test(@RequestParam String city) {
         prayerScraper.getIslamiskaAnnualPrayers(city);
         return prayerRepository.findLocationByMunicipality(city);
-    }
-
-    @GetMapping("/all")
-    public List<Location> getAllLocations() {
-        return prayerRepository.findAll();
     }
 }

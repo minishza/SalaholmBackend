@@ -1,37 +1,27 @@
 package salah.api.salaholm.entity.calendar;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
-import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
-import java.util.UUID;
-
-@Entity
-@RequiredArgsConstructor
 @Builder
-@AllArgsConstructor
-@Getter
-@Setter
 public class PrayerCalendar {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     @QuerySqlField(index = true)
-    private UUID id;
+    private Long id;
 
     private int date;
     private String dayOfWeek;
+    @QuerySqlField(index = true)
     private String month;
     private int year;
+    @QuerySqlField(index = true)
     private String formattedCalendar;
 
     private CalendarType calendarType;
+    @QuerySqlField(index = true)
     private boolean important;
 
-    @ManyToOne
-    @JoinColumn(name = "prayer_id", nullable = false)
-    @JsonBackReference
-    private Prayer prayer;
+    @QuerySqlField(index = true)
+    private Long prayerId;
 }

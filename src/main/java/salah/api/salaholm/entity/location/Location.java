@@ -1,31 +1,19 @@
 package salah.api.salaholm.entity.location;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import salah.api.salaholm.entity.prayer.Prayer;
+import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
-import java.util.List;
+import java.util.UUID;
 
-@Entity
-@Table
-@Data
+
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Location {
-    @Id
-    private Long id;
+    @QuerySqlField(index = true)
+    private UUID id;
+
+    @QuerySqlField(index = true)
     private String municipality;
 
-    @OneToOne(mappedBy = "location",  cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Coordinates coordinates;
-
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Prayer> prayers;
+    @QuerySqlField(index = true)
+    private Long coordinateId;
 }

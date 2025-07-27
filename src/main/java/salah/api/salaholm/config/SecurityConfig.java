@@ -1,5 +1,7 @@
 package salah.api.salaholm.config;
 
+import org.apache.ignite.Ignite;
+import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.springdata22.repository.config.EnableIgniteRepositories;
@@ -21,10 +23,6 @@ import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.entity.prayer.PrayerTime;
-import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.util.RetryWait;
-import salah.api.salaholm.util.parser.LocationProvider;
-import salah.api.salaholm.util.prayer.PrayerDateConverter;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -88,41 +86,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PrayerDateConverter prayerCalendar(SimpleDateFormat dateFormatter) {
-        return new PrayerDateConverter(dateFormatter);
-    }
-
-    @Bean
-    public PrayerMapper prayerMapper(PrayerDateConverter prayerDateConverter) {
-        return new PrayerMapper(prayerDateConverter);
-    }
-
-    @Bean
-    public LocationProvider locationProvider() {
-        return new LocationProvider();
-    }
-
-    @Bean
-    public RetryWait retryWait(ChromeDriver driver) {
-        return new RetryWait(driver);
-    }
-
-    @Bean
     public IgniteConfiguration igniteCfg() {
         var prayerCache = new CacheConfiguration<>("prayers");
         prayerCache.setIndexedTypes(Long.class, Prayer.class);
 
         var coordinatesCache = new CacheConfiguration<>("coordinates");
-        coordinatesCache.setIndexedTypes(UUID.class, Coordinates.class);
+        coordinatesCache.setIndexedTypes(Long.class, Coordinates.class);
 
         var locationCache = new CacheConfiguration<>("location");
-        locationCache.setIndexedTypes(Long.class, Location.class);
+        locationCache.setIndexedTypes(UUID.class, Location.class);
 
         var prayerTimeCache = new CacheConfiguration<>("prayerTime");
         prayerTimeCache.setIndexedTypes(Long.class, PrayerTime.class);
 
         var prayerCalendarCache = new CacheConfiguration<>("prayerCalendar");
-        prayerCalendarCache.setIndexedTypes(UUID.class, Prayer.class);
+        prayerCalendarCache.setIndexedTypes(Long.class, Prayer.class);
 
 
         var igniteConfiguration = new IgniteConfiguration();
@@ -133,5 +111,10 @@ public class SecurityConfig {
                 prayerCalendarCache);
 
         return igniteConfiguration;
+    }
+
+    @Bean
+    public Ignite ignite(IgniteConfiguration igniteConfiguration) {
+        return Ignition.start(igniteConfiguration);
     }
 }

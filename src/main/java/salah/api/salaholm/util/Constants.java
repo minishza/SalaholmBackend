@@ -1,10 +1,5 @@
 package salah.api.salaholm.util;
 
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
-
-@Component
-@NoArgsConstructor
 public final class Constants {
     public static final String ISLAMISKA_CONNECTION_URL = "https://www.islamiskaforbundet.se/bonetider/";
     public static final String ISLAMISKA_MONTH_OPTIONS = "#ifis_bonetider_page_months option:nth-child(-n+12)";

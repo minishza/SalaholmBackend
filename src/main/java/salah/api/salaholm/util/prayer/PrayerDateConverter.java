@@ -1,20 +1,25 @@
 package salah.api.salaholm.util.prayer;
 
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
+import salah.api.salaholm.util.IdGenerator;
 
 import java.text.SimpleDateFormat;
 import java.time.Year;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PrayerDateConverter {
     private SimpleDateFormat formatter;
+    private IdGenerator idGenerator;
 
     public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
         int date = Integer.parseInt(data[0]);
@@ -22,52 +27,50 @@ public class PrayerDateConverter {
         var hijriCalendar = new UmmalquraCalendar();
         hijriCalendar.setTime(gregorianCalendar.getTime());
 
-        var gregorianPrayerCalendar = toPrayerCalendarOfGregorian(gregorianCalendar, prayer);
-        var hijriPrayerCalendar = toPrayerCalendarOfHijri(hijriCalendar, prayer);
+        Long prayerId = prayer.getId();
 
-        return List.of(gregorianPrayerCalendar, hijriPrayerCalendar);
+        return List.of(
+                toPrayerCalendar(gregorianCalendar, prayerId, CalendarType.GREGORIAN),
+                toPrayerCalendar(hijriCalendar, prayerId, CalendarType.HIJRI)
+        );
     }
 
-    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayer prayer) {
-        formatter.setCalendar(hijriCalendar);
-        CalendarData formattedHijri = toCalendarData(hijriCalendar);
 
-        return buildPrayerCalendar(formattedHijri)
-                .calendarType(CalendarType.HIJRI)
-                .prayer(prayer)
+    private PrayerCalendar toPrayerCalendar(Calendar calendar, Long prayerId, CalendarType type) {
+        formatter.setCalendar(calendar);
+        CalendarData calendarData = toCalendarData(calendar);
+
+        return buildPrayerCalendar(calendarData, prayerId)
+                .calendarType(type)
                 .build();
     }
 
 
-    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayer prayer) {
-        formatter.setCalendar(gregorianCalendar);
-        CalendarData formattedGregorian = toCalendarData(gregorianCalendar);
+    private CalendarData toCalendarData(Calendar calendar) {
+        String formatted = formatter.format(calendar.getTime());
+        String[] parts = formatted.split("\\s*,\\s*");
 
-        return buildPrayerCalendar(formattedGregorian)
-                .calendarType(CalendarType.GREGORIAN)
-                .prayer(prayer)
-                .build();
+        if (parts.length != 4) {
+            throw new IllegalStateException("Unexpected calendar format: " + formatted);
+        }
+
+        String day = parts[0];
+        int date = Integer.parseInt(parts[1]);
+        String month = parts[2];
+        int year = Integer.parseInt(parts[3]);
+
+        return new CalendarData(date, day, month, year, formatted);
     }
 
-    private CalendarData toCalendarData(GregorianCalendar calendar) {
-        String formattedCalendar = formatter.format(calendar.getTime());
-
-        String[] formattedData = formattedCalendar.split("\\s*,\\s*");
-        int date = Integer.parseInt(formattedData[1]);
-        String day = formattedData[0];
-        String month = formattedData[2];
-        int year = Integer.parseInt(formattedData[3]);
-
-        return new CalendarData(date, day, month, year, formattedCalendar);
-    }
-
-    private PrayerCalendar.PrayerCalendarBuilder buildPrayerCalendar(CalendarData calendarData) {
+    private PrayerCalendar.PrayerCalendarBuilder buildPrayerCalendar(CalendarData calendarData, Long prayerId) {
         return PrayerCalendar.builder()
+                .id(idGenerator.nextPrayerCalendarId())
                 .date(calendarData.date)
                 .dayOfWeek(calendarData.day)
                 .month(calendarData.month)
                 .year(calendarData.year)
                 .formattedCalendar(calendarData.formatted)
+                .prayerId(prayerId)
                 .important(false);
     }
 

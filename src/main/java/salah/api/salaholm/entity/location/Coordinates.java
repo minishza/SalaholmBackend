@@ -1,28 +1,21 @@
 package salah.api.salaholm.entity.location;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 import java.util.UUID;
 
-@Entity
-@Table
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Coordinates {
-    @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
-    private UUID id;
 
+    @QuerySqlField(index = true)
+    private Long id;
+
+    @QuerySqlField(index = true)
     private double latitude;
+    @QuerySqlField(index = true)
     private double longitude;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
-    @JsonBackReference
-    private Location location;
+    @QuerySqlField(index = true)
+    private UUID locationUUID;
 }

@@ -6,37 +6,46 @@ import com.opencagedata.jopencage.model.JOpenCageForwardRequest;
 import com.opencagedata.jopencage.model.JOpenCageLatLng;
 import com.opencagedata.jopencage.model.JOpenCageResponse;
 import com.opencagedata.jopencage.model.JOpenCageResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
+import salah.api.salaholm.util.IdGenerator;
+
+import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class LocationProvider {
+    private IdGenerator idGenerator;
+
     public Location prepareLocationBuilder(String city) {
         JOpenCageResult locationResult = getJOpenCageResult(city);
 
-        var coordinates = prepareCoordinatesBuilder(locationResult);
         var municipality = getCity(locationResult);
 
-        Location.LocationBuilder locationBuilder = Location.builder()
-                .municipality(municipality);
+        UUID locationUUID = UUID.randomUUID();
+        Location location = Location.builder()
+                .id(locationUUID)
+                .municipality(municipality)
+                .build();
 
-        Location location = locationBuilder.build();
-        coordinates.setLocation(location);
-        location.setCoordinates(coordinates);
-
-        location.setId(hashToLong(city));
+        persistCoordinates(locationResult, locationUUID);
 
         return location;
     }
 
-    private Coordinates prepareCoordinatesBuilder(JOpenCageResult response) {
+    private void persistCoordinates(JOpenCageResult response, UUID locationUUID) {
         JOpenCageLatLng location = response.getGeometry();
 
-        return Coordinates.builder()
+        var coords = Coordinates.builder()
+                .id(idGenerator.nextCoordinatesId())
                 .latitude(location.getLat())
                 .longitude(location.getLng())
+                .locationUUID(locationUUID)
                 .build();
+
+        //persist
     }
 
     private String getCity(JOpenCageResult response) {

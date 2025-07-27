@@ -2,10 +2,12 @@ package salah.api.salaholm.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
+@Component
 public class RetryWait {
     private final WebDriver driver;
     private final int TIMES_TO_RETRY = 5;

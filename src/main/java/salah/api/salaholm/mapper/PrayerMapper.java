@@ -1,31 +1,35 @@
 package salah.api.salaholm.mapper;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.entity.prayer.PrayerTime;
+import salah.api.salaholm.util.IdGenerator;
 import salah.api.salaholm.util.prayer.PrayerDateConverter;
 import salah.api.salaholm.util.prayer.PrayerName;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PrayerMapper implements PrayerMapperInterface {
     private PrayerDateConverter prayerDateConverter;
+    private IdGenerator idGenerator;
 
     @Override
     public Prayer toPrayer(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
-        Prayer prayer = Prayer.builder().build();
+        var prayer = Prayer.builder()
+                .id(idGenerator.nextPrayerId())
+                .build();
 
-        List<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
-        prayer.setPrayerCalendars(calendars);
+        var calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
+        //persist
 
-        List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, prayer);
-        prayer.setPrayerTimes(dailyPrayers);
+        var dailyPrayers = buildPrayerTimes(prayerData, prayer);
+        //persist
 
         return prayer;
     }
@@ -35,8 +39,9 @@ public class PrayerMapper implements PrayerMapperInterface {
         for (int prayerOrder = 1; prayerOrder < prayerData.length; prayerOrder++) {
             prayerTimes.add(
                     buildPrayerTimeFromString(prayerData[prayerOrder])
+                            .id(idGenerator.nextPrayerTimeId())
                             .prayerName(PrayerName.fromIndex(prayerOrder).orElseThrow(() -> new IllegalArgumentException("Invalid enum prayer index")))
-                            .prayer(prayer)
+                            .prayerId(prayer.getId())
                             .build()
             );
         }

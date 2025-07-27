@@ -1,35 +1,26 @@
 package salah.api.salaholm.entity.prayer;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import org.apache.ignite.cache.query.annotations.QuerySqlField;
 import salah.api.salaholm.util.prayer.PrayerName;
 
 import java.time.Duration;
 import java.time.LocalTime;
 
-@Entity
 @Builder
-@Table
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class PrayerTime {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @QuerySqlField(index = true)
     private Long id;
 
+    @QuerySqlField(index = true)
     private PrayerName prayerName;
     private String hour;
     private String minute;
 
-    @ManyToOne
-    @JoinColumn(name = "prayer_id", nullable = false)
-    @JsonBackReference
-    private Prayer prayer;
+    @QuerySqlField(index = true)
+    private Long prayerId;
 
     public boolean isBefore(LocalTime time) {
         return toLocalTime().isBefore(time);
