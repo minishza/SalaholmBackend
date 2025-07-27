@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
 @Table
 @Builder
@@ -15,8 +13,8 @@ import java.util.UUID;
 @Setter
 public class Coordinates {
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    private Long id;
 
     private double latitude;
     private double longitude;

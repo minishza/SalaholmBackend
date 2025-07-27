@@ -20,11 +20,11 @@ public class Prayer {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PrayerCalendar> prayerCalendars;
 
-    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PrayerTime> prayerTimes;
 

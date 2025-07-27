@@ -11,13 +11,15 @@ import salah.api.salaholm.entity.prayer.Prayer;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "location")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String municipality;
 
@@ -25,7 +27,7 @@ public class Location {
     @JsonManagedReference
     private Coordinates coordinates;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Prayer> prayers;
 }

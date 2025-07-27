@@ -7,7 +7,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayer;
@@ -18,6 +17,7 @@ import salah.api.salaholm.util.RetryWait;
 import salah.api.salaholm.util.parser.LocationProvider;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static salah.api.salaholm.util.Constants.ISLAMISKA_CONNECTION_URL;
@@ -71,7 +71,7 @@ public class PrayerScraper {
                     })
                     .toList();
 
-            location.setPrayers(prayerRows);
+            location.setPrayers(new ArrayList<>(prayerRows));
 
             prayerRepository.save(location);
         }

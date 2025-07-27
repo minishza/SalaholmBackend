@@ -25,8 +25,6 @@ public class LocationProvider {
         coordinates.setLocation(location);
         location.setCoordinates(coordinates);
 
-        location.setId(hashToLong(city));
-
         return location;
     }
 
