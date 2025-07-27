@@ -1,5 +1,8 @@
 package salah.api.salaholm.config;
 
+import org.apache.ignite.configuration.CacheConfiguration;
+import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.springdata22.repository.config.EnableIgniteRepositories;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -7,7 +10,6 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
@@ -15,6 +17,10 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import salah.api.salaholm.entity.location.Coordinates;
+import salah.api.salaholm.entity.location.Location;
+import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.PrayerTime;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.util.RetryWait;
 import salah.api.salaholm.util.parser.LocationProvider;
@@ -26,6 +32,7 @@ import java.util.*;
 
 @Configuration
 @EnableWebSecurity
+@EnableIgniteRepositories
 public class SecurityConfig {
 
     @Bean
@@ -98,5 +105,33 @@ public class SecurityConfig {
     @Bean
     public RetryWait retryWait(ChromeDriver driver) {
         return new RetryWait(driver);
+    }
+
+    @Bean
+    public IgniteConfiguration igniteCfg() {
+        var prayerCache = new CacheConfiguration<>("prayers");
+        prayerCache.setIndexedTypes(Long.class, Prayer.class);
+
+        var coordinatesCache = new CacheConfiguration<>("coordinates");
+        coordinatesCache.setIndexedTypes(UUID.class, Coordinates.class);
+
+        var locationCache = new CacheConfiguration<>("location");
+        locationCache.setIndexedTypes(Long.class, Location.class);
+
+        var prayerTimeCache = new CacheConfiguration<>("prayerTime");
+        prayerTimeCache.setIndexedTypes(Long.class, PrayerTime.class);
+
+        var prayerCalendarCache = new CacheConfiguration<>("prayerCalendar");
+        prayerCalendarCache.setIndexedTypes(UUID.class, Prayer.class);
+
+
+        var igniteConfiguration = new IgniteConfiguration();
+        igniteConfiguration.setCacheConfiguration(prayerCache,
+                coordinatesCache,
+                locationCache,
+                prayerTimeCache,
+                prayerCalendarCache);
+
+        return igniteConfiguration;
     }
 }
