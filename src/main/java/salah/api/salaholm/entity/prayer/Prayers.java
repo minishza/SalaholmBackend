@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Prayer implements Serializable {
+public class Prayers implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

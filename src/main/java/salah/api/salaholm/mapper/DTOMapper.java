@@ -1,36 +1,81 @@
 package salah.api.salaholm.mapper;
 
+import org.springframework.stereotype.Component;
 import salah.api.salaholm.dto.calendar.PrayerCalendarDTO;
 import salah.api.salaholm.dto.location.CoordinatesDTO;
 import salah.api.salaholm.dto.location.LocationDTO;
-import salah.api.salaholm.dto.prayer.PrayerDTO;
 import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
+import salah.api.salaholm.dto.prayer.PrayersDTO;
+import salah.api.salaholm.entity.calendar.PrayerCalendar;
+import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
+import salah.api.salaholm.entity.prayer.PrayerTime;
+import salah.api.salaholm.entity.prayer.Prayers;
 
+import java.util.List;
+
+@Component
 public class DTOMapper implements DTOMapperInterface {
 
     @Override
-    public LocationDTO mapLocationToLocationDTO(Location location) {
-        return null;
+    public LocationDTO toLocationDTO(Location location) {
+        List<PrayersDTO> prayersDTOList = location.getPrayers()
+                .stream()
+                .map(this::toPrayersDTO)
+                .toList();
+
+        return LocationDTO.builder()
+                .municipality(location.getMunicipality())
+                .coordinates(toCoordinatesDTO(location.getCoordinates()))
+                .prayers(prayersDTOList)
+                .build();
     }
 
     @Override
-    public CoordinatesDTO mapLocationToCoordinatesDTO(Location location) {
-        return null;
+     public CoordinatesDTO toCoordinatesDTO(Coordinates coordinates) {
+        return CoordinatesDTO.builder()
+                .latitude(coordinates.getLatitude())
+                .longitude(coordinates.getLongitude())
+                .build();
     }
 
     @Override
-    public PrayerDTO mapLocationToPrayerDTO(Location location) {
-        return null;
+    public PrayersDTO toPrayersDTO(Prayers prayer) {
+        var prayerTimeDTOList = prayer.getPrayerTimes()
+                .stream()
+                .map(this::toPrayerTimeDTO)
+                .toList();
+
+        var prayerCalendarDTOList = prayer.getPrayerCalendars()
+                .stream()
+                .map(this::toPrayerCalendarDTO)
+                .toList();
+
+        return PrayersDTO.builder()
+                .prayerTimes(prayerTimeDTOList)
+                .prayerCalendars(prayerCalendarDTOList)
+                .build();
     }
 
     @Override
-    public PrayerTimeDTO mapLocationToPrayerTimeDTO(Location location) {
-        return null;
+    public PrayerTimeDTO toPrayerTimeDTO(PrayerTime prayerTime) {
+        return PrayerTimeDTO.builder()
+                .hour(prayerTime.getHour())
+                .minute(prayerTime.getMinute())
+                .prayerName(prayerTime.getPrayerName())
+                .build();
     }
 
     @Override
-    public PrayerCalendarDTO mapLocationToPrayerCalendarDTO(Location location) {
-        return null;
+    public PrayerCalendarDTO toPrayerCalendarDTO(PrayerCalendar prayerCalendar) {
+        return PrayerCalendarDTO.builder()
+                .date(prayerCalendar.getDate())
+                .calendarType(prayerCalendar.getCalendarType())
+                .month(prayerCalendar.getMonth())
+                .year(prayerCalendar.getYear())
+                .dayOfWeek(prayerCalendar.getDayOfWeek())
+                .formattedCalendar(prayerCalendar.getFormattedCalendar())
+                .important(prayerCalendar.isImportant())
+                .build();
     }
 }

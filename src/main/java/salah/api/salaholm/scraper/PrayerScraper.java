@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.repository.LocationPrayerRepository;
 import salah.api.salaholm.util.Constants;
@@ -65,10 +65,10 @@ public class PrayerScraper {
 
             getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i).click();
 
-            List<Prayer> prayerRows = getPrayerTable()
+            List<Prayers> prayerRows = getPrayerTable()
                     .stream()
                     .map(element -> {
-                        Prayer p = prayerMapper.toPrayer(element, city, monthName);
+                        Prayers p = prayerMapper.toPrayer(element, city, monthName);
                         if (p == null) throw new IllegalStateException("Null prayer generated"); //add custom exception
                         p.setLocation(location);
                         return p;

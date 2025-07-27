@@ -2,7 +2,7 @@ package salah.api.salaholm.dto.location;
 
 import lombok.Builder;
 import lombok.Data;
-import salah.api.salaholm.dto.prayer.PrayerDTO;
+import salah.api.salaholm.dto.prayer.PrayersDTO;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public class LocationDTO {
 
     private CoordinatesDTO coordinates;
 
-    private List<PrayerDTO> prayers;
+    private List<PrayersDTO> prayers;
 }

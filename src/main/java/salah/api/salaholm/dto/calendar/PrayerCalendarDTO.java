@@ -2,7 +2,6 @@ package salah.api.salaholm.dto.calendar;
 
 import lombok.Builder;
 import lombok.Data;
-import salah.api.salaholm.dto.prayer.PrayerDTO;
 import salah.api.salaholm.util.CalendarType;
 
 @Data
@@ -16,6 +15,4 @@ public class PrayerCalendarDTO {
 
     private CalendarType calendarType;
     private boolean important;
-
-    private PrayerDTO prayer;
 }
