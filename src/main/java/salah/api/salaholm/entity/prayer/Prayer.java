@@ -7,8 +7,6 @@ import lombok.*;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Location;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.List;
 
 @Builder
@@ -17,10 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Prayer implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class Prayer {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;

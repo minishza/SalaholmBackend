@@ -6,18 +6,13 @@ import lombok.*;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.util.CalendarType;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Entity
 @RequiredArgsConstructor
 @Builder
 @AllArgsConstructor
 @Getter
 @Setter
-public class PrayerCalendar implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class PrayerCalendar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

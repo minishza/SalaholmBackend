@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serial;
-
 @Entity
 @Table
 @Builder
@@ -14,8 +12,6 @@ import java.io.Serial;
 @Getter
 @Setter
 public class Coordinates {
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
