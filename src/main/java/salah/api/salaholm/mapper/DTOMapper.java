@@ -19,7 +19,7 @@ import java.util.List;
 public class DTOMapper implements DTOMapperInterface {
 
     @Override
-    @Cacheable(value = "locationCache", key = "#location.municipality.toLowerCase()")
+    @Cacheable(value = "locationCache", key = "#location.city.toLowerCase()")
     public LocationDTO toLocationDTO(Location location) {
         List<PrayersDTO> prayersDTOList = location.getPrayers()
                 .stream()
@@ -30,6 +30,7 @@ public class DTOMapper implements DTOMapperInterface {
                 .municipality(location.getMunicipality())
                 .coordinates(toCoordinatesDTO(location.getCoordinates()))
                 .prayers(prayersDTOList)
+                .city(location.getCity())
                 .build();
     }
 

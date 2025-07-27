@@ -15,6 +15,7 @@ public class LocationDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String municipality;
+    private String city;
 
     private CoordinatesDTO coordinates;
 

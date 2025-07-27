@@ -24,6 +24,7 @@ public class LocationProvider {
         Location location = locationBuilder.build();
         coordinates.setLocation(location);
         location.setCoordinates(coordinates);
+        location.setCity(city);
 
         return location;
     }

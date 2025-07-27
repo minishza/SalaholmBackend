@@ -26,6 +26,7 @@ public class Location implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String municipality;
+    private String city;
 
     @OneToOne(mappedBy = "location",  cascade = CascadeType.ALL)
     @JsonManagedReference
