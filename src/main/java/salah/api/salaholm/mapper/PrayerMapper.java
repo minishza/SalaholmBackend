@@ -12,10 +12,9 @@ import java.util.*;
 
 @Component
 @AllArgsConstructor
-public class PrayerMapper implements PrayerMapperInterface {
+public class PrayerMapper {
     private PrayerDateConverter prayerDateConverter;
 
-    @Override
     public Prayer toPrayer(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
