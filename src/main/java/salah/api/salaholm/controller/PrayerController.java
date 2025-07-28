@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import salah.api.salaholm.dto.location.LocationDTO;
-import salah.api.salaholm.service.PrayerService;
+import salah.api.salaholm.service.LocationCacheService;
 
 @RestController
 @RequestMapping("/prayer/{city}")
 @RequiredArgsConstructor
 public class PrayerController {
-    private final PrayerService prayerService;
+    private final LocationCacheService locationCacheService;
 
     @GetMapping("/test")
     public ResponseEntity<LocationDTO> test(@PathVariable String city) {
-        return new ResponseEntity<>(prayerService.getOrCacheLocationByCity(city), HttpStatus.OK);
+        return new ResponseEntity<>(locationCacheService.getOrCacheLocationByCity(city), HttpStatus.OK);
     }
 }

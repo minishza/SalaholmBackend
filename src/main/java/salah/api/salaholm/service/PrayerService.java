@@ -1,11 +1,9 @@
 package salah.api.salaholm.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import salah.api.salaholm.dto.location.LocationDTO;
 import salah.api.salaholm.dto.prayer.PrayersDTO;
-import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.mapper.DTOMapper;
 import salah.api.salaholm.repository.LocationPrayerRepository;
 import salah.api.salaholm.util.scraper.PrayerScraper;
@@ -21,9 +19,11 @@ public class PrayerService implements PrayerServiceInterface {
     private final LocationPrayerRepository locationPrayerRepository;
     private final PrayerScraper prayerScraper;
     private final DTOMapper mapper;
+    private final LocationCacheService locationCacheService;
 
     @Override
     public Optional<LocationDTO> getLocationDTO(String city) {
+
         return Optional.empty();
     }
 
@@ -75,11 +75,5 @@ public class PrayerService implements PrayerServiceInterface {
     @Override
     public List<LocalDate> getAvailablePrayerDates(String city) {
         return List.of();
-    }
-
-    @Cacheable(key = "#city.toLowerCase()", value = "locationCache")
-    public LocationDTO getOrCacheLocationByCity(String city) {
-        Location location = locationPrayerRepository.save(prayerScraper.getAnnualPrayersByLocation(city));
-        return mapper.toLocationDTO(location);
     }
 }
