@@ -1,6 +1,5 @@
 package salah.api.salaholm.exception;
 
-import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -58,13 +57,10 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorResponse buildErrorResponse(int status, RuntimeException ex) {
-        return ErrorResponse.builder()
-                .status(status)
-                .message(ex.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
+        return new ErrorResponse(
+                status,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
     }
-
-    @Builder
-    public record ErrorResponse(int status, String message, LocalDateTime timestamp) {}
 }
