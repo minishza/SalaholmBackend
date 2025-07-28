@@ -1,19 +1,17 @@
 package salah.api.salaholm.service;
 
 import salah.api.salaholm.dto.location.LocationDTO;
+import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
 import salah.api.salaholm.dto.prayer.PrayersDTO;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 
 public interface PrayerServiceInterface {
-    Optional<LocationDTO> getLocationDTO(String city);
-
-    Optional<PrayersDTO> getPrayersByCity(String city);
-
-    Optional<PrayersDTO> getPrayersByDate();
+    LocationDTO getLocationDTO(String city);
+    PrayersDTO getPrayersByCity(String city);
+    List<PrayerTimeDTO> getPrayersByDate();
 
     List<PrayersDTO> getMonthlyPrayers(String city, YearMonth month);
 

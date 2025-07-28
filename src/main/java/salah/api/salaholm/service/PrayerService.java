@@ -3,6 +3,7 @@ package salah.api.salaholm.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import salah.api.salaholm.dto.location.LocationDTO;
+import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
 import salah.api.salaholm.dto.prayer.PrayersDTO;
 import salah.api.salaholm.mapper.DTOMapper;
 import salah.api.salaholm.repository.LocationPrayerRepository;
@@ -22,19 +23,19 @@ public class PrayerService implements PrayerServiceInterface {
     private final LocationCacheService locationCacheService;
 
     @Override
-    public Optional<LocationDTO> getLocationDTO(String city) {
-
-        return Optional.empty();
+    public LocationDTO getLocationDTO(String city) {
+        Optional<LocationDTO> locationDTO = Optional.ofNullable(locationCacheService.getOrCacheLocationByCity(city));
+        return locationDTO.orElseThrow();
     }
 
     @Override
-    public Optional<PrayersDTO> getPrayersByCity(String city) {
-        return Optional.empty();
+    public PrayersDTO getPrayersByCity(String city) {
+        return null;
     }
 
     @Override
-    public Optional<PrayersDTO> getPrayersByDate() {
-        return Optional.empty();
+    public List<PrayerTimeDTO> getPrayersByDate() {
+        return List.of();
     }
 
     @Override
