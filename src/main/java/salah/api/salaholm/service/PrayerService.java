@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import salah.api.salaholm.dto.location.LocationDTO;
 import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
 import salah.api.salaholm.dto.prayer.PrayersDTO;
+import salah.api.salaholm.exception.IncorrectDateProvidedException;
 import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.DTOMapper;
 import salah.api.salaholm.repository.LocationPrayerRepository;
@@ -34,13 +35,28 @@ public class PrayerService implements PrayerServiceInterface {
     }
 
     @Override
-    public PrayersDTO getPrayersByCity(String city) {
-        return null;
+    public List<PrayersDTO> getPrayersByCity(String city) {
+        return getLocationDTO(city)
+                .getPrayers();
     }
 
     @Override
-    public List<PrayerTimeDTO> getPrayersByDate() {
-        return List.of();
+    public List<PrayerTimeDTO> getPrayersByDate(String city, LocalDate date) {
+        // 2025-07-28
+        if (date.getYear() > LocalDate.now().getYear()) {
+            throw new IncorrectDateProvidedException(
+                    String.format("Provided date is for an invalid year: %s ", date.getYear())
+            );
+        }
+        var prayersDTOList = getPrayersByCity(city);
+//        List<PrayerTimeDTO> prayers =  prayersDTOList
+//                .stream()
+//                .filter(() -> {
+//
+//                });
+
+
+        return null;
     }
 
     @Override

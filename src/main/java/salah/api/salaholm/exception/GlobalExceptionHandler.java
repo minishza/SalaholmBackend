@@ -45,9 +45,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(PrayerDateNotProvidedException.class)
+    @ExceptionHandler(IncorrectDateProvidedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handlePrayerDateNotProvidedException(PrayerDateNotProvidedException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handlePrayerDateNotProvidedException(IncorrectDateProvidedException ex, WebRequest request) {
         ErrorResponse errorResponse = buildErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex

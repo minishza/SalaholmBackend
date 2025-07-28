@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.util.Constants;
 import salah.api.salaholm.util.RetryWait;
@@ -18,6 +19,7 @@ import salah.api.salaholm.util.parser.LocationProvider;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static salah.api.salaholm.util.Constants.ISLAMISKA_CONNECTION_URL;
 import static salah.api.salaholm.util.Constants.ISLAMISKA_PRAYERS_TABLE;
@@ -35,21 +37,24 @@ public class PrayerScraper {
         connectToIslamiskaForbundetSite();
 
         List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
+        Optional<Location> location = Optional.empty();
 
         for (WebElement city : cityOptionsList) {
             String currentCityName = city.getText();
 
             if (fromCity.equalsIgnoreCase(currentCityName)) {
                 city.click();
-                return getAnnualPrayers(currentCityName);
+                location = getAnnualPrayers(currentCityName);
             }
         }
 
-        throw new IllegalArgumentException("City not found: " + fromCity);
+        return location.orElseThrow(() -> new LocationNotFoundException(
+                        String.format("Location was not found with %s inside getLocationDTO", fromCity)
+        ));
     }
 
 
-    public Location getAnnualPrayers(String city) {
+    private Optional<Location> getAnnualPrayers(String city) {
         connectToIslamiskaForbundetSite();
         Location location = locationProvider.prepareLocationBuilder(city);
 
@@ -76,7 +81,7 @@ public class PrayerScraper {
 
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
 
-        return location;
+        return Optional.of(location);
     }
 
     private List<WebElement> getIslamiskaMonthsList(String options) {

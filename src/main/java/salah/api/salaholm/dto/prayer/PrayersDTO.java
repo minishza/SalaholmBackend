@@ -8,7 +8,8 @@ import salah.api.salaholm.dto.calendar.PrayerCalendarDTO;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -17,7 +18,7 @@ public class PrayersDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<PrayerCalendarDTO> prayerCalendars;
+    private Set<PrayerCalendarDTO> prayerCalendars;
 
-    private List<PrayerTimeDTO> prayerTimes;
+    private Set<PrayerTimeDTO> prayerTimes;
 }

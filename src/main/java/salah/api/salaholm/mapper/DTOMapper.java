@@ -13,6 +13,7 @@ import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.entity.prayer.PrayerTime;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class DTOMapper implements DTOMapperInterface {
@@ -45,12 +46,12 @@ public class DTOMapper implements DTOMapperInterface {
         var prayerTimeDTOList = prayer.getPrayerTimes()
                 .stream()
                 .map(this::toPrayerTimeDTO)
-                .toList();
+                .collect(Collectors.toSet());
 
         var prayerCalendarDTOList = prayer.getPrayerCalendars()
                 .stream()
                 .map(this::toPrayerCalendarDTO)
-                .toList();
+                .collect(Collectors.toSet());
 
         return PrayersDTO.builder()
                 .prayerTimes(prayerTimeDTOList)

@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface PrayerServiceInterface {
     LocationDTO getLocationDTO(String city);
-    PrayersDTO getPrayersByCity(String city);
-    List<PrayerTimeDTO> getPrayersByDate();
+    List<PrayersDTO> getPrayersByCity(String city);
+    List<PrayerTimeDTO> getPrayersByDate(String city, LocalDate date);
 
     List<PrayersDTO> getMonthlyPrayers(String city, YearMonth month);
 
