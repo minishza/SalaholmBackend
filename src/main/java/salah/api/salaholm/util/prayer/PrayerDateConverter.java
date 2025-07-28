@@ -4,7 +4,7 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.util.CalendarType;
 
 import java.text.SimpleDateFormat;
@@ -16,7 +16,7 @@ import java.util.*;
 public class PrayerDateConverter {
     private SimpleDateFormat formatter;
 
-    public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayer prayer) {
+    public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayers prayer) {
         int date = Integer.parseInt(data[0]);
         var gregorianCalendar = prepareGregorianBuilder(date, monthName);
         var hijriCalendar = new UmmalquraCalendar();
@@ -28,7 +28,7 @@ public class PrayerDateConverter {
         return List.of(gregorianPrayerCalendar, hijriPrayerCalendar);
     }
 
-    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayer prayer) {
+    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayers prayer) {
         formatter.setCalendar(hijriCalendar);
         CalendarData formattedHijri = toCalendarData(hijriCalendar);
 
@@ -39,7 +39,7 @@ public class PrayerDateConverter {
     }
 
 
-    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayer prayer) {
+    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayers prayer) {
         formatter.setCalendar(gregorianCalendar);
         CalendarData formattedGregorian = toCalendarData(gregorianCalendar);
 
@@ -72,7 +72,6 @@ public class PrayerDateConverter {
     }
 
     private int toMonth(String monthName) {
-
         Map<String, Integer> swedishMonthMap = Map.ofEntries(
                 Map.entry("januari", Calendar.JANUARY),
                 Map.entry("februari", Calendar.FEBRUARY),
@@ -89,6 +88,26 @@ public class PrayerDateConverter {
         );
 
         return swedishMonthMap.get(monthName.toLowerCase());
+    }
+
+
+    public int toMonthValue(String monthName) {
+        Map<String, Integer> englishMap = Map.ofEntries(
+                Map.entry("january", Calendar.JANUARY),
+                Map.entry("february", Calendar.FEBRUARY),
+                Map.entry("mars", Calendar.MARCH),
+                Map.entry("april", Calendar.APRIL),
+                Map.entry("may", Calendar.MAY),
+                Map.entry("june", Calendar.JUNE),
+                Map.entry("july", Calendar.JULY),
+                Map.entry("august", Calendar.AUGUST),
+                Map.entry("september", Calendar.SEPTEMBER),
+                Map.entry("october", Calendar.OCTOBER),
+                Map.entry("november", Calendar.NOVEMBER),
+                Map.entry("december", Calendar.DECEMBER)
+        );
+
+        return englishMap.get(monthName.toLowerCase());
     }
 
     private GregorianCalendar prepareGregorianBuilder(int date, String monthName) {

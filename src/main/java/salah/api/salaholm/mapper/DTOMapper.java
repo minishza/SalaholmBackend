@@ -9,7 +9,7 @@ import salah.api.salaholm.dto.prayer.PrayersDTO;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.entity.prayer.PrayerTime;
 
 import java.util.List;
@@ -42,19 +42,13 @@ public class DTOMapper implements DTOMapperInterface {
     }
 
     @Override
-    public PrayersDTO toPrayersDTO(Prayer prayer) {
-        var prayerTimeDTOList = prayer.getPrayerTimes()
-                .stream()
-                .map(this::toPrayerTimeDTO)
-                .collect(Collectors.toSet());
-
+    public PrayersDTO toPrayersDTO(Prayers prayer) {
         var prayerCalendarDTOList = prayer.getPrayerCalendars()
                 .stream()
                 .map(this::toPrayerCalendarDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         return PrayersDTO.builder()
-                .prayerTimes(prayerTimeDTOList)
                 .prayerCalendars(prayerCalendarDTOList)
                 .build();
     }
@@ -70,6 +64,11 @@ public class DTOMapper implements DTOMapperInterface {
 
     @Override
     public PrayerCalendarDTO toPrayerCalendarDTO(PrayerCalendar prayerCalendar) {
+        List<PrayerTimeDTO> prayerTimeDTOS = prayerCalendar.getPrayerTimes()
+                .stream()
+                .map(this::toPrayerTimeDTO)
+                .toList();
+
         return PrayerCalendarDTO.builder()
                 .date(prayerCalendar.getDate())
                 .calendarType(prayerCalendar.getCalendarType())
@@ -78,6 +77,7 @@ public class DTOMapper implements DTOMapperInterface {
                 .dayOfWeek(prayerCalendar.getDayOfWeek())
                 .formattedCalendar(prayerCalendar.getFormattedCalendar())
                 .important(prayerCalendar.isImportant())
+                .prayerTimes(prayerTimeDTOS)
                 .build();
     }
 }

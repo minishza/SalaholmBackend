@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 
 import java.util.List;
 
@@ -30,5 +30,5 @@ public class Location {
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Prayer> prayers;
+    private List<Prayers> prayers;
 }

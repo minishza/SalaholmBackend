@@ -3,7 +3,7 @@ package salah.api.salaholm.mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.entity.prayer.PrayerTime;
 import salah.api.salaholm.util.prayer.PrayerDateConverter;
 import salah.api.salaholm.util.prayer.PrayerName;
@@ -15,27 +15,27 @@ import java.util.*;
 public class PrayerMapper {
     private PrayerDateConverter prayerDateConverter;
 
-    public Prayer toPrayers(String webElement, String city, String month) {
+    public Prayers toPrayers(String webElement, String city, String month) {
         String[] prayerData = parseWebElement(webElement);
 
-        Prayer prayer = Prayer.builder().build();
+        Prayers prayer = Prayers.builder().build();
 
         List<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
-        prayer.setPrayerCalendars(calendars);
 
-        List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, prayer);
-        prayer.setPrayerTimes(dailyPrayers);
+        List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, calendars);
+
+        prayer.setPrayerCalendars(calendars);
 
         return prayer;
     }
 
-    private List<PrayerTime> buildPrayerTimes(String[] prayerData, Prayer prayer) {
-        var prayerTimes = new ArrayList<PrayerTime>();
+    private List<PrayerTime> buildPrayerTimes(String[] prayerData, List<PrayerCalendar> prayerCalendar) {
+        List<PrayerTime> prayerTimes = new ArrayList<>();
         for (int prayerOrder = 1; prayerOrder < prayerData.length; prayerOrder++) {
             prayerTimes.add(
                     buildPrayerTimeFromString(prayerData[prayerOrder])
                             .prayerName(PrayerName.fromIndex(prayerOrder).orElseThrow(() -> new IllegalArgumentException("Invalid enum prayer index")))
-                            .prayer(prayer)
+                            .prayerCalendar(prayerCalendar)
                             .build()
             );
         }

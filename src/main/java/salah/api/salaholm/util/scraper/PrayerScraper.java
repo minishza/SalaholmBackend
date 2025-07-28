@@ -8,8 +8,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
+import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Location;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.util.Constants;
@@ -39,12 +40,15 @@ public class PrayerScraper {
         List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
         Optional<Location> location = Optional.empty();
 
-        for (WebElement city : cityOptionsList) {
+        for (int i = 0; i < cityOptionsList.size(); i++) {
+            cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
+            WebElement city = cityOptionsList.get(i);
             String currentCityName = city.getText();
 
             if (fromCity.equalsIgnoreCase(currentCityName)) {
                 city.click();
                 location = getAnnualPrayers(currentCityName);
+                break;
             }
         }
 
@@ -57,27 +61,31 @@ public class PrayerScraper {
     private Optional<Location> getAnnualPrayers(String city) {
         connectToIslamiskaForbundetSite();
         Location location = locationProvider.prepareLocationBuilder(city);
+        List<PrayerCalendar> prayerCalendars = new ArrayList<>();
 
         for (int i = 0; i < 12; i++) {
-            WebElement month = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i);
+            List<WebElement> months = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS);
+            WebElement month = months.get(i);
 
             String monthName = month.getText();
             log.info("{} of city {}", monthName, city);
 
-            getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i).click();
+            month.click();
 
-            List<Prayer> prayerRows = getPrayerTable()
+            List<Prayers> prayerRows = getPrayerTable()
                     .stream()
                     .map(element -> {
-                        Prayer p = prayerMapper.toPrayers(element, city, monthName);
-                        if (p == null) throw new IllegalStateException("Null prayer generated"); //add custom exception
+                        Prayers p = prayerMapper.toPrayers(element, city, monthName);
                         p.setLocation(location);
                         return p;
                     })
                     .toList();
 
-            location.setPrayers(new ArrayList<>(prayerRows));
+            //each location has monthly prayers not yearly
+            location.setPrayers(prayerRows);
         }
+
+
 
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
 

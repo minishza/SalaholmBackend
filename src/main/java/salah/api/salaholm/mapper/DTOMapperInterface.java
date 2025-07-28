@@ -9,11 +9,11 @@ import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.PrayerTime;
-import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.Prayers;
 
 public interface DTOMapperInterface {
     LocationDTO toLocationDTO(Location location);
-    PrayersDTO toPrayersDTO(Prayer prayers);
+    PrayersDTO toPrayersDTO(Prayers prayers);
     PrayerTimeDTO toPrayerTimeDTO(PrayerTime prayerTime);
     PrayerCalendarDTO toPrayerCalendarDTO(PrayerCalendar prayerCalendar);
     CoordinatesDTO toCoordinatesDTO(Coordinates coordinates);

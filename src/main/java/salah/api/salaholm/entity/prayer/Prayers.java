@@ -15,18 +15,14 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Prayer {
+public class Prayers {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "prayers", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PrayerCalendar> prayerCalendars;
-
-    @OneToMany(mappedBy = "prayer", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<PrayerTime> prayerTimes;
 
     @ManyToOne
     @JoinColumn(name="location_id", nullable=false)

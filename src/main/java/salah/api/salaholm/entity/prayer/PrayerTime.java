@@ -4,10 +4,12 @@ package salah.api.salaholm.entity.prayer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.util.prayer.PrayerName;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -26,10 +28,9 @@ public class PrayerTime {
     private String hour;
     private String minute;
 
-    @ManyToOne
-    @JoinColumn(name = "prayer_id", nullable = false)
+    @ManyToMany(mappedBy = "prayerTimes")
     @JsonBackReference
-    private Prayer prayer;
+    private List<PrayerCalendar> prayerCalendar;
 
     public boolean isBefore(LocalTime time) {
         return toLocalTime().isBefore(time);
