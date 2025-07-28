@@ -1,6 +1,5 @@
 package salah.api.salaholm.mapper;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.dto.calendar.PrayerCalendarDTO;
 import salah.api.salaholm.dto.location.CoordinatesDTO;
@@ -10,8 +9,8 @@ import salah.api.salaholm.dto.prayer.PrayersDTO;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
-import salah.api.salaholm.entity.prayer.PrayerTime;
 import salah.api.salaholm.entity.prayer.Prayer;
+import salah.api.salaholm.entity.prayer.PrayerTime;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
 public class DTOMapper implements DTOMapperInterface {
 
     @Override
-    @Cacheable(value = "locationCache", key = "#location.city.toLowerCase()")
     public LocationDTO toLocationDTO(Location location) {
         List<PrayersDTO> prayersDTOList = location.getPrayers()
                 .stream()

@@ -1,4 +1,4 @@
-package salah.api.salaholm.scraper;
+package salah.api.salaholm.util.scraper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.repository.LocationPrayerRepository;
 import salah.api.salaholm.util.Constants;
 import salah.api.salaholm.util.RetryWait;
 import salah.api.salaholm.util.parser.LocationProvider;
@@ -28,7 +27,6 @@ import static salah.api.salaholm.util.Constants.ISLAMISKA_PRAYERS_TABLE;
 @RequiredArgsConstructor
 public class PrayerScraper {
     private final ChromeDriver chromeWebDriver;
-    private final LocationPrayerRepository prayerRepository;
     private final RetryWait retryWait;
     private final PrayerMapper prayerMapper;
     private final LocationProvider locationProvider;

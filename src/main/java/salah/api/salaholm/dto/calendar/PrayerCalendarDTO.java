@@ -1,12 +1,16 @@
 package salah.api.salaholm.dto.calendar;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import salah.api.salaholm.util.CalendarType;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
 public class PrayerCalendarDTO implements Serializable {
