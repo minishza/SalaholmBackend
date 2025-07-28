@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import salah.api.salaholm.dto.location.LocationDTO;
 import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
 import salah.api.salaholm.dto.prayer.PrayersDTO;
+import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.DTOMapper;
 import salah.api.salaholm.repository.LocationPrayerRepository;
 import salah.api.salaholm.util.scraper.PrayerScraper;
@@ -12,7 +13,6 @@ import salah.api.salaholm.util.scraper.PrayerScraper;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +24,13 @@ public class PrayerService implements PrayerServiceInterface {
 
     @Override
     public LocationDTO getLocationDTO(String city) {
-        Optional<LocationDTO> locationDTO = Optional.ofNullable(locationCacheService.getOrCacheLocationByCity(city));
-        return locationDTO.orElseThrow();
+        LocationDTO location = locationCacheService.getOrCacheLocationByCity(city);
+        if (location == null) {
+            throw new LocationNotFoundException(
+                    String.format("Location was not found with %s inside getLocationDTO", city)
+            );
+        }
+        return location;
     }
 
     @Override

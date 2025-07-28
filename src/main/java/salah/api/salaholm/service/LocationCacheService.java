@@ -18,7 +18,9 @@ public class LocationCacheService {
 
     @Cacheable(key = "#city.toLowerCase()", value = "locationCache")
     public LocationDTO getOrCacheLocationByCity(String city) {
-        Location location = locationPrayerRepository.save(prayerScraper.getAnnualPrayersByLocation(city));
+        Location location = locationPrayerRepository.findLocationByCity(city)
+                .orElseGet(() -> locationPrayerRepository.save(prayerScraper.getAnnualPrayersByLocation(city)));
+
         return mapper.toLocationDTO(location);
     }
 }
