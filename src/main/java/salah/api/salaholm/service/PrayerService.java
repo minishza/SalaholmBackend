@@ -10,5 +10,4 @@ import salah.api.salaholm.util.scraper.PrayerScraper;
 public class PrayerService {
     private final LocationPrayerRepository locationPrayerRepository;
     private final PrayerScraper prayerScraper;
-
 }

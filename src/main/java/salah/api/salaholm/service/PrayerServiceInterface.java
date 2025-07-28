@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface PrayerServiceInterface {
     Optional<LocationDTO> getLocationDTO(String city);
+
     Optional<PrayersDTO> getPrayersByCity(String city);
+
     Optional<PrayersDTO> getPrayersByDate();
 
     List<PrayersDTO> getMonthlyPrayers(String city, YearMonth month);
