@@ -1,21 +1,20 @@
 package salah.api.salaholm.entity.calendar;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.entity.prayer.PrayerTime;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.util.CalendarType;
 
 import java.util.List;
 
-@Entity
-@RequiredArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+
+@Entity
 public class PrayerCalendar {
 
     @Id
@@ -38,11 +37,9 @@ public class PrayerCalendar {
             joinColumns = @JoinColumn(name = "calendar_id"),
             inverseJoinColumns = @JoinColumn(name = "prayer_time_id")
     )
-    @JsonManagedReference
     private List<PrayerTime> prayerTimes;
 
     @ManyToOne
-    @JoinColumn(name = "prayer_id", nullable = false)
-    @JsonBackReference
-    private Prayers prayer;
+    @JoinColumn(name = "prayers_id", nullable = false)
+    private Prayers prayers;
 }

@@ -1,27 +1,25 @@
 package salah.api.salaholm.entity.prayer;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.util.prayer.PrayerName;
 
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.List;
 
-@Entity
 @Builder
-@Table
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+
+@Entity
 public class PrayerTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "prayer_time_id")
     private Long id;
 
     private PrayerName prayerName;
@@ -29,22 +27,5 @@ public class PrayerTime {
     private String minute;
 
     @ManyToMany(mappedBy = "prayerTimes")
-    @JsonBackReference
     private List<PrayerCalendar> prayerCalendar;
-
-    public boolean isBefore(LocalTime time) {
-        return toLocalTime().isBefore(time);
-    }
-
-    public boolean isAfter(LocalTime time) {
-        return toLocalTime().isAfter(time);
-    }
-
-    public Duration timeUntil(LocalTime now) {
-        return Duration.between(now, toLocalTime());
-    }
-
-    private LocalTime toLocalTime() {
-        return LocalTime.of(Integer.parseInt(hour), Integer.parseInt(minute));
-    }
 }

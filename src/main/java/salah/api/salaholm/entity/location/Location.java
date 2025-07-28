@@ -1,34 +1,29 @@
 package salah.api.salaholm.entity.location;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import salah.api.salaholm.entity.prayer.Prayers;
 
 import java.util.List;
 
-@Entity
-@Table(name = "location")
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Location {
+@Getter
+@Setter
 
+@Entity
+public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String municipality;
     private String city;
 
-    @OneToOne(mappedBy = "location",  cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "coordinates_id")
     private Coordinates coordinates;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "location", cascade = CascadeType.PERSIST)
     private List<Prayers> prayers;
 }
