@@ -34,7 +34,6 @@ public class PrayerDateConverter {
 
         return buildPrayerCalendar(formattedHijri)
                 .calendarType(CalendarType.HIJRI)
-                .prayer(prayer)
                 .build();
     }
 
@@ -45,7 +44,6 @@ public class PrayerDateConverter {
 
         return buildPrayerCalendar(formattedGregorian)
                 .calendarType(CalendarType.GREGORIAN)
-                .prayer(prayer)
                 .build();
     }
 

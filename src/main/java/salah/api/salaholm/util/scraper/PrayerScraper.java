@@ -62,6 +62,7 @@ public class PrayerScraper {
         connectToIslamiskaForbundetSite();
         Location location = locationProvider.prepareLocationBuilder(city);
         List<PrayerCalendar> prayerCalendars = new ArrayList<>();
+        Prayers prayers = new Prayers();
 
         for (int i = 0; i < 12; i++) {
             List<WebElement> months = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS);
@@ -72,7 +73,7 @@ public class PrayerScraper {
 
             month.click();
 
-            List<Prayers> prayerRows = getPrayerTable()
+            List<PrayerCalendar> prayerRows = getPrayerTable()
                     .stream()
                     .map(element -> {
                         Prayers p = prayerMapper.toPrayers(element, city, monthName);
@@ -81,10 +82,9 @@ public class PrayerScraper {
                     })
                     .toList();
 
-            //each location has monthly prayers not yearly
-            location.setPrayers(prayerRows);
         }
-
+        prayers.setLocation(location);
+        location.setPrayers(prayers);
 
 
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);

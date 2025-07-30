@@ -23,6 +23,9 @@ public class PrayerMapper {
         List<PrayerCalendar> calendars = prayerDateConverter.createHijriAndGregorianPrayerCalendars(prayerData, month, prayer);
 
         List<PrayerTime> dailyPrayers = buildPrayerTimes(prayerData, calendars);
+        calendars.forEach(calendar -> {
+            calendar.setPrayerTimes(dailyPrayers);
+        });
 
         prayer.setPrayerCalendars(calendars);
 
