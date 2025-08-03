@@ -7,6 +7,6 @@ import salah.api.salaholm.entity.location.Location;
 import java.util.Optional;
 
 @Repository
-public interface LocationPrayerRepository extends JpaRepository<Location, Long> {
+public interface PrayerRepository extends JpaRepository<Location, Long> {
     Optional<Location> findLocationByCity(String city);
 }

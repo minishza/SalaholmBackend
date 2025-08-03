@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import salah.api.salaholm.dto.location.LocationDTO;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.mapper.DTOMapper;
-import salah.api.salaholm.repository.LocationPrayerRepository;
+import salah.api.salaholm.repository.PrayerRepository;
 import salah.api.salaholm.util.scraper.PrayerScraper;
 
 @Service
 @RequiredArgsConstructor
 public class LocationCacheService {
-    private final LocationPrayerRepository locationPrayerRepository;
+    private final PrayerRepository locationPrayerRepository;
     private final PrayerScraper prayerScraper;
     private final DTOMapper mapper;
 

@@ -8,7 +8,7 @@ import salah.api.salaholm.dto.prayer.PrayersDTO;
 import salah.api.salaholm.exception.IncorrectDateProvidedException;
 import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.DTOMapper;
-import salah.api.salaholm.repository.LocationPrayerRepository;
+import salah.api.salaholm.repository.PrayerRepository;
 import salah.api.salaholm.util.CalendarType;
 import salah.api.salaholm.util.prayer.PrayerDateConverter;
 import salah.api.salaholm.util.scraper.PrayerScraper;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PrayerService implements PrayerServiceInterface {
-    private final LocationPrayerRepository locationPrayerRepository;
+    private final PrayerRepository locationPrayerRepository;
     private final PrayerScraper prayerScraper;
     private final DTOMapper mapper;
     private final LocationCacheService locationCacheService;
