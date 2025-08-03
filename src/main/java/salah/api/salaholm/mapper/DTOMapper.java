@@ -46,10 +46,16 @@ public class DTOMapper implements DTOMapperInterface {
         var prayerCalendarDTOList = prayer.getPrayerCalendars()
                 .stream()
                 .map(this::toPrayerCalendarDTO)
-                .collect(Collectors.toList());
+                .toList();
+
+        var prayerTimeDTOList = prayer.getPrayerTimes()
+                .stream()
+                .map(this::toPrayerTimeDTO)
+                .toList();
 
         return PrayersDTO.builder()
                 .prayerCalendars(prayerCalendarDTOList)
+                .prayerTimes(prayerTimeDTOList)
                 .build();
     }
 
@@ -64,11 +70,6 @@ public class DTOMapper implements DTOMapperInterface {
 
     @Override
     public PrayerCalendarDTO toPrayerCalendarDTO(PrayerCalendar prayerCalendar) {
-        List<PrayerTimeDTO> prayerTimeDTOS = prayerCalendar.getPrayerTimes()
-                .stream()
-                .map(this::toPrayerTimeDTO)
-                .toList();
-
         return PrayerCalendarDTO.builder()
                 .date(prayerCalendar.getDate())
                 .calendarType(prayerCalendar.getCalendarType())
@@ -77,7 +78,6 @@ public class DTOMapper implements DTOMapperInterface {
                 .dayOfWeek(prayerCalendar.getDayOfWeek())
                 .formattedCalendar(prayerCalendar.getFormattedCalendar())
                 .important(prayerCalendar.isImportant())
-                .prayerTimes(prayerTimeDTOS)
                 .build();
     }
 }

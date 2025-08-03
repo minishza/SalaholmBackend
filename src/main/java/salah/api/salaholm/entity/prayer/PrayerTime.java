@@ -26,6 +26,7 @@ public class PrayerTime {
     private String hour;
     private String minute;
 
-    @ManyToMany(mappedBy = "prayerTimes")
-    private List<PrayerCalendar> prayerCalendar;
+    @ManyToOne
+    @JoinColumn(name="prayers_id", nullable=false)
+    private Prayers prayers;
 }

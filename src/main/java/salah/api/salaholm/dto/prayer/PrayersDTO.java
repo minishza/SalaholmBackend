@@ -19,4 +19,5 @@ public class PrayersDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private List<PrayerCalendarDTO> prayerCalendars;
+    private List<PrayerTimeDTO> prayerTimes;
 }

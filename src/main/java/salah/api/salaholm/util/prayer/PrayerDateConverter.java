@@ -2,6 +2,7 @@ package salah.api.salaholm.util.prayer;
 
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import lombok.AllArgsConstructor;
+import org.openqa.selenium.PrintsPage;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.prayer.Prayers;
@@ -14,6 +15,7 @@ import java.util.*;
 @Component
 @AllArgsConstructor
 public class PrayerDateConverter {
+    private final PrintsPage printsPage;
     private SimpleDateFormat formatter;
 
     public List<PrayerCalendar> createHijriAndGregorianPrayerCalendars(String[] data, String monthName, Prayers prayer) {
@@ -28,9 +30,9 @@ public class PrayerDateConverter {
         return List.of(gregorianPrayerCalendar, hijriPrayerCalendar);
     }
 
-    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayers prayer) {
+    private PrayerCalendar toPrayerCalendarOfHijri(UmmalquraCalendar hijriCalendar, Prayers prayers) {
         formatter.setCalendar(hijriCalendar);
-        CalendarData formattedHijri = toCalendarData(hijriCalendar);
+        CalendarData formattedHijri = toCalendarData(hijriCalendar, prayers);
 
         return buildPrayerCalendar(formattedHijri)
                 .calendarType(CalendarType.HIJRI)
@@ -38,16 +40,16 @@ public class PrayerDateConverter {
     }
 
 
-    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayers prayer) {
+    private PrayerCalendar toPrayerCalendarOfGregorian(GregorianCalendar gregorianCalendar, Prayers prayers) {
         formatter.setCalendar(gregorianCalendar);
-        CalendarData formattedGregorian = toCalendarData(gregorianCalendar);
+        CalendarData formattedGregorian = toCalendarData(gregorianCalendar, prayers);
 
         return buildPrayerCalendar(formattedGregorian)
                 .calendarType(CalendarType.GREGORIAN)
                 .build();
     }
 
-    private CalendarData toCalendarData(GregorianCalendar calendar) {
+    private CalendarData toCalendarData(GregorianCalendar calendar, Prayers prayers) {
         String formattedCalendar = formatter.format(calendar.getTime());
 
         String[] formattedData = formattedCalendar.split("\\s*,\\s*");
@@ -56,7 +58,7 @@ public class PrayerDateConverter {
         String month = formattedData[2];
         int year = Integer.parseInt(formattedData[3]);
 
-        return new CalendarData(date, day, month, year, formattedCalendar);
+        return new CalendarData(date, day, month, year, formattedCalendar, prayers);
     }
 
     private PrayerCalendar.PrayerCalendarBuilder buildPrayerCalendar(CalendarData calendarData) {
@@ -66,6 +68,7 @@ public class PrayerDateConverter {
                 .month(calendarData.month)
                 .year(calendarData.year)
                 .formattedCalendar(calendarData.formatted)
+                .prayers(calendarData.prayers)
                 .important(false);
     }
 
@@ -115,5 +118,5 @@ public class PrayerDateConverter {
         return new GregorianCalendar(year, month, date);
     }
 
-    private record CalendarData(int date, String day, String month, int year, String formatted) {}
+    private record CalendarData(int date, String day, String month, int year, String formatted, Prayers prayers) {}
 }

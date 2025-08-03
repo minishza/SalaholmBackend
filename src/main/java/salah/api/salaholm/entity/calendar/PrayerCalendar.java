@@ -31,14 +31,6 @@ public class PrayerCalendar {
     private CalendarType calendarType;
     private boolean important;
 
-    @ManyToMany
-    @JoinTable(
-            name = "prayer_calander_link",
-            joinColumns = @JoinColumn(name = "calendar_id"),
-            inverseJoinColumns = @JoinColumn(name = "prayer_time_id")
-    )
-    private List<PrayerTime> prayerTimes;
-
     @ManyToOne
     @JoinColumn(name = "prayers_id", nullable = false)
     private Prayers prayers;

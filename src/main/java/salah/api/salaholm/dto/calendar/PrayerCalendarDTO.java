@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
+import salah.api.salaholm.dto.prayer.PrayersDTO;
+import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.util.CalendarType;
 
 import java.io.Serial;
@@ -27,6 +29,4 @@ public class PrayerCalendarDTO implements Serializable {
 
     private CalendarType calendarType;
     private boolean important;
-
-    private List<PrayerTimeDTO> prayerTimes;
 }

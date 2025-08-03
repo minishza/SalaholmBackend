@@ -22,6 +22,9 @@ public class Prayers {
     @OneToMany(mappedBy = "prayers", cascade = CascadeType.PERSIST)
     private List<PrayerCalendar> prayerCalendars;
 
+    @OneToMany(mappedBy = "prayers", cascade = CascadeType.PERSIST)
+    private List<PrayerTime>  prayerTimes;
+
     @ManyToOne
     @JoinColumn(name="location_id", nullable=false)
     private Location location;
