@@ -32,7 +32,6 @@ public class PrayerController {
             return ResponseEntity.ok(locationDTO);
         }
 
-        System.out.println(redisTemplate.opsForValue().get(city));
 
         Location location = prayerScraper.getAnnualPrayersByLocation(city);
         LocationDTO locationDTO = dtoMapper.toLocationDTO(location);
