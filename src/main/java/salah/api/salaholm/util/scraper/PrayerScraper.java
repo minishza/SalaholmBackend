@@ -2,19 +2,13 @@ package salah.api.salaholm.util.scraper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Component;
-import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayers;
 import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.util.Constants;
-import salah.api.salaholm.util.RetryWait;
 import salah.api.salaholm.util.parser.LocationProvider;
 
 import java.time.Duration;
@@ -29,8 +23,7 @@ import static salah.api.salaholm.util.Constants.ISLAMISKA_PRAYERS_TABLE;
 @Slf4j
 @RequiredArgsConstructor
 public class PrayerScraper {
-    private final ChromeDriver chromeWebDriver;
-    private final RetryWait retryWait;
+    private final OkHttpClient client;
     private final PrayerMapper prayerMapper;
     private final LocationProvider locationProvider;
 
