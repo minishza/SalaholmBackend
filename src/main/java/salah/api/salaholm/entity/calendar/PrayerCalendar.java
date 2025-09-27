@@ -26,6 +26,7 @@ public class PrayerCalendar {
     private String dayOfWeek;
     private String month;
     private int year;
+
     private String formattedCalendar;
 
     private CalendarType calendarType;

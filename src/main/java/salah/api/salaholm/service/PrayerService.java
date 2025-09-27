@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PrayerService implements PrayerServiceInterface {
     private final PrayerRepository locationPrayerRepository;
-    private final PrayerScraper prayerScraper;
     private final DTOMapper mapper;
     private final LocationCacheService locationCacheService;
     private final PrayerDateConverter  prayerDateConverter;
