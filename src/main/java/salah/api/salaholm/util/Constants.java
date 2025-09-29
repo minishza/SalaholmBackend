@@ -3,29 +3,27 @@ package salah.api.salaholm.util;
 import java.util.List;
 
 public final class Constants {
-    public static final String ISLAMISKA_CONNECTION_URL = "https://www.islamiskaforbundet.se/bonetider/";
-    public static final String ISLAMISKA_MONTH_OPTIONS = "#ifis_bonetider_page_months option:nth-child(-n+12)";
-    public static final String ISLAMISKA_CITIES_OPTIONS = "#ifis_bonetider_page_cities option";
-    public static final String ISLAMISKA_PRAYERS_TABLE = "tbody tr";
+    public static final String CITIES_URL = "https://www.islamiskaforbundet.se/bonetider/";
+    public static final String PRAYERS_URL = "https://www.islamiskaforbundet.se/wp-content/plugins/bonetider/Bonetider_Widget.php";
     public static final List<String> POPULATED_CITIES = List.of(
-            "Stockholm",
-            "Göteborg",
-            "Malmö",
-            "Uppsala",
-            "Västerås",
-            "Örebro",
-            "Linköping",
-            "Helsingborg",
-            "Jönköping",
-            "Norrköping",
-            "Lund",
-            "Umeå",
-            "Gävle",
-            "Borås",
-            "Sundsvall",
-            "Eskilstuna",
-            "Växjö",
-            "Halmstad",
-            "Karlstad"
+  "Stockholm, SE",
+            "Göteborg, SE",
+            "Malmö, SE",
+            "Uppsala, SE",
+            "Västerås, SE",
+            "Örebro, SE",
+            "Linköping, SE",
+            "Helsingborg, SE",
+            "Jönköping, SE",
+            "Norrköping, SE",
+            "Lund, SE",
+            "Umeå, SE",
+            "Gävle, SE",
+            "Borås, SE",
+            "Sundsvall, SE",
+            "Eskilstuna, SE",
+            "Växjö, SE",
+            "Halmstad, SE",
+            "Karlstad, SE"
     );
 }

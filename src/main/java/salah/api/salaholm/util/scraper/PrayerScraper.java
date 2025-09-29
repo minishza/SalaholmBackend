@@ -2,102 +2,98 @@ package salah.api.salaholm.util.scraper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.OkHttpClient;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
 import salah.api.salaholm.entity.prayer.Prayers;
-import salah.api.salaholm.exception.LocationNotFoundException;
 import salah.api.salaholm.mapper.PrayerMapper;
-import salah.api.salaholm.util.Constants;
 import salah.api.salaholm.util.parser.LocationProvider;
 
-import java.time.Duration;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
-import static salah.api.salaholm.util.Constants.ISLAMISKA_CONNECTION_URL;
-import static salah.api.salaholm.util.Constants.ISLAMISKA_PRAYERS_TABLE;
+import static salah.api.salaholm.util.Constants.CITIES_URL;
+import static salah.api.salaholm.util.Constants.PRAYERS_URL;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class PrayerScraper {
-    private final OkHttpClient client;
     private final PrayerMapper prayerMapper;
     private final LocationProvider locationProvider;
 
-    public Location getAnnualPrayersByLocation(String fromCity) {
-        connectToIslamiskaForbundetSite();
-
-        List<WebElement> cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
-        Optional<Location> location = Optional.empty();
-
-        for (int i = 0; i < cityOptionsList.size(); i++) {
-            cityOptionsList = getIslamiskaMonthsList(Constants.ISLAMISKA_CITIES_OPTIONS);
-            WebElement city = cityOptionsList.get(i);
-            String currentCityName = city.getText();
-
-            if (fromCity.equalsIgnoreCase(currentCityName)) {
-                city.click();
-                location = getAnnualPrayers(currentCityName);
-                break;
-            }
-        }
-
-        return location.orElseThrow(() -> new LocationNotFoundException(
-                        String.format("Location was not found with %s inside getLocationDTO", fromCity)
-        ));
-    }
-
-
-    private Optional<Location> getAnnualPrayers(String city) {
-        connectToIslamiskaForbundetSite();
+    public Location getYearlyPrayersByCity(String city) {
         Location location = locationProvider.prepareLocationBuilder(city);
-        List<Prayers> prayers = new ArrayList<>();
 
-        for (int i = 0; i < 12; i++) {
-            List<WebElement> months = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS);
-            WebElement month = months.get(i);
+        ExecutorService executor = Executors.newFixedThreadPool(6);
 
-            String monthName = month.getText();
-            log.info("{} of city {}", monthName, city);
+        try {
+            List<CompletableFuture<List<Prayers>>> futures = IntStream.rangeClosed(1, 12)
+                    .mapToObj(month -> CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return fetchMonthlyPrayers(city, month, location);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to fetch month " + month, e);
+                        }
+                    }, executor))
+                    .toList();
 
-            month.click();
+            List<Prayers> yearlyPrayers = futures.stream()
+                    .map(CompletableFuture::join)
+                    .flatMap(List::stream)
+                    .toList();
 
-            getPrayerTable()
-                    .stream()
-                    .map(element -> {
-                        Prayers p = prayerMapper.toPrayers(element, monthName);
-                        p.setLocation(location);
-                        return p;
-                    })
-                    .forEach(prayers::add);
+            location.setPrayers(yearlyPrayers);
+            return location;
+        } finally {
+            executor.shutdown();
         }
-        location.setPrayers(prayers);
-
-
-        log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
-
-        return Optional.of(location);
     }
 
-    private List<WebElement> getIslamiskaMonthsList(String options) {
-        By optionBy = By.cssSelector(options);
-        return retryWait.retryForLoop(optionBy);
+    private List<Prayers> fetchMonthlyPrayers(String city, int month, Location location) throws IOException {
+        Map<String, String> formBody = Map.of(
+                "ifis_bonetider_page_city", city,
+                "ifis_bonetider_page_month", Integer.toString(month)
+        );
+
+        var body = Jsoup.connect(PRAYERS_URL)
+                .timeout(5000)
+                .data(formBody)
+                .post();
+
+        List<Element> prayerTable = body.select("#ifis_bonetider td");
+        int prayerRows = prayerTable.size() / 7;
+
+        return IntStream.range(0, prayerRows)
+                .mapToObj(i -> {
+                    List<String> row = prayerTable.subList(i * 7, i * 7 + 7)
+                            .stream()
+                            .map(Element::text)
+                            .toList();
+
+                    Prayers prayer = prayerMapper.toPrayers(row, month);
+                    prayer.setLocation(location);
+                    return prayer;
+                })
+                .toList();
     }
 
-    private List<String> getPrayerTable() {
-        By prayerTableSelector = By.cssSelector(ISLAMISKA_PRAYERS_TABLE);
-
-        new WebDriverWait(chromeWebDriver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.presenceOfElementLocated(prayerTableSelector));
-
-        return retryWait.retry(prayerTableSelector);
+    public List<String> scrapeAvailableCities() {
+        try {
+            Document pageBody = Jsoup.connect(CITIES_URL).get();
+            Elements cities = pageBody.select("#ifis_bonetider_page_cities");
+            return cities.stream().map(Element::text).toList();
+        } catch (IOException e) {
+            log.error("Error connecting to {}", CITIES_URL, e);
+            return  List.of("ERROR FETCHING CITIES");
+        }
     }
-
-    private void connectToIslamiskaForbundetSite() {
-        chromeWebDriver.get(ISLAMISKA_CONNECTION_URL);
-    }
-
 }
