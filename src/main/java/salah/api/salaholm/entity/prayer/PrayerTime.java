@@ -16,7 +16,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PrayerTime {
+public class  PrayerTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

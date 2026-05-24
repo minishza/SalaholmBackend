@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
-import salah.api.salaholm.entity.location.Location;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class Prayer {
     private List<PrayerTime> prayerTimes;
 
     @ManyToOne
-    @JoinColumn(name="location_id", nullable=false)
+    @JoinColumn(name="monthly_prayers_id", nullable=false)
     @JsonBackReference
-    private Location location;
+    private MonthlyPrayers monthlyPrayers;
 }

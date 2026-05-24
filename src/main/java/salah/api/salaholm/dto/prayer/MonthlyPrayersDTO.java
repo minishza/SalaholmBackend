@@ -1,10 +1,9 @@
-package salah.api.salaholm.dto.location;
+package salah.api.salaholm.dto.prayer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import salah.api.salaholm.dto.prayer.MonthlyPrayersDTO;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,14 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class LocationDTO implements Serializable {
+public class MonthlyPrayersDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-
-    private String municipality;
-    private String city;
-
-    private CoordinatesDTO coordinates;
-
-    private List<MonthlyPrayersDTO> prayers;
+    private List<PrayersDTO> prayers;
 }

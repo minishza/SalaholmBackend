@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 import salah.api.salaholm.entity.location.Location;
+import salah.api.salaholm.entity.prayer.MonthlyPrayers;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.mapper.PrayerMapper;
 import salah.api.salaholm.util.Constants;
@@ -52,6 +53,7 @@ public class PrayerScraper {
     public Location getAnnualPrayers(String city) {
         connectToIslamiskaForbundetSite();
         Location location = locationProvider.prepareLocationBuilder(city);
+        List<MonthlyPrayers> yearlyPrayers = new ArrayList<>();
 
         for (int i = 0; i < 12; i++) {
             WebElement month = getIslamiskaMonthsList(Constants.ISLAMISKA_MONTH_OPTIONS).get(i);
@@ -66,14 +68,24 @@ public class PrayerScraper {
                     .map(element -> {
                         Prayer p = prayerMapper.toPrayers(element, city, monthName);
                         if (p == null) throw new IllegalStateException("Null prayer generated"); //add custom exception
-                        p.setLocation(location);
                         return p;
                     })
                     .toList();
 
-            location.setPrayers(new ArrayList<>(prayerRows));
-        }
+            MonthlyPrayers monthlyPrayers = MonthlyPrayers.builder()
+                    .location(location)
+                    .build();
 
+            prayerRows.forEach(s -> {
+                System.out.println(s.getPrayerCalendars().get(0).getFormattedCalendar());
+                s.setMonthlyPrayers(monthlyPrayers);
+            });
+
+            monthlyPrayers.setMonthlyPrayers(prayerRows);
+
+            yearlyPrayers.add(monthlyPrayers);
+        }
+        location.setPrayers(yearlyPrayers);
         log.info("Prayers Scraped From {} ", ISLAMISKA_CONNECTION_URL);
 
         return location;

@@ -4,11 +4,13 @@ import org.springframework.stereotype.Component;
 import salah.api.salaholm.dto.calendar.PrayerCalendarDTO;
 import salah.api.salaholm.dto.location.CoordinatesDTO;
 import salah.api.salaholm.dto.location.LocationDTO;
+import salah.api.salaholm.dto.prayer.MonthlyPrayersDTO;
 import salah.api.salaholm.dto.prayer.PrayerTimeDTO;
 import salah.api.salaholm.dto.prayer.PrayersDTO;
 import salah.api.salaholm.entity.calendar.PrayerCalendar;
 import salah.api.salaholm.entity.location.Coordinates;
 import salah.api.salaholm.entity.location.Location;
+import salah.api.salaholm.entity.prayer.MonthlyPrayers;
 import salah.api.salaholm.entity.prayer.Prayer;
 import salah.api.salaholm.entity.prayer.PrayerTime;
 
@@ -19,9 +21,9 @@ public class DTOMapper implements DTOMapperInterface {
 
     @Override
     public LocationDTO toLocationDTO(Location location) {
-        List<PrayersDTO> prayersDTOList = location.getPrayers()
+        List<MonthlyPrayersDTO> prayersDTOList = location.getPrayers()
                 .stream()
-                .map(this::toPrayersDTO)
+                .map(this::toMonthlyPrayersDTO)
                 .toList();
 
         return LocationDTO.builder()
@@ -37,6 +39,13 @@ public class DTOMapper implements DTOMapperInterface {
         return CoordinatesDTO.builder()
                 .latitude(coordinates.getLatitude())
                 .longitude(coordinates.getLongitude())
+                .build();
+    }
+
+    @Override
+    public MonthlyPrayersDTO toMonthlyPrayersDTO(MonthlyPrayers monthlyPrayers) {
+        return MonthlyPrayersDTO.builder()
+                .prayers(monthlyPrayers.getMonthlyPrayers().stream().map(this::toPrayersDTO).toList())
                 .build();
     }
 

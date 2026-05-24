@@ -53,7 +53,7 @@ public class LocationProvider {
     }
     private JOpenCageResult getJOpenCageResult(String city) {
         //move to secret vault
-        var apiKey = "56820c6646184270ac33780344ae4707";
+        var apiKey = "387cf33e18f441f2941fe4f126e99473";
         var jOpenCageGeocoder = new JOpenCageGeocoder(apiKey);
 
         JOpenCageForwardRequest request = getJOpenCageForwardRequest(city);
